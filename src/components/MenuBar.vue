@@ -11,11 +11,13 @@ const router = useRouter();
 const items = ref([
   {
     label: 'Home',
-    icon: 'pi pi-home'
+    icon: 'pi pi-home',
+    command: () => router.push('/home')
   },
   {
     label: 'Cadastrar',
     icon: 'pi pi-plus',
+    command: () => router.push('/cadastrar-funcionario')
   },
   {
     label: 'Recursos',
@@ -39,21 +41,24 @@ const items = ref([
             command: () => router.push('/funcionarios-ativos')
           },
           {
-            label: 'Intivos',
+            label: 'Inativos',
             icon: 'pi pi-times',
             command: () => router.push('/funcionarios-inativos')
           },
           {
             label: 'Cpf',
             icon: 'pi pi-id-card',
+            command: () => router.push('/consultar-cpf')
           },
           {
             label: 'Dados da Conta',
             icon: 'pi pi-wallet',
+            command: () => router.push('/consultar-dados-conta')
           },
           {
             label: 'Tipo de Conta',
             icon: 'pi pi-credit-card',
+            command: () => router.push('/consultar-tipo-conta')
           },
           {
             label: 'Especialidade',

@@ -1,7 +1,7 @@
 <template>
   <div class="card">
-    <MenuBar />
-    <router-view />
+    <MenuBar/>
+    <router-view/>
   </div>
 </template>
 
