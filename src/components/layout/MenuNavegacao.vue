@@ -2,13 +2,16 @@
   <h1 class="titulo">Sistema de Consultas e Gerenciamento de Funcionários</h1>
   <Menubar :model="items">
     <template #end>
-      <Button
-        icon="pi pi-sign-out"
-        label="Sair"
-        text
-        severity="secondary"
-        @click="logout"
-      />
+      <div class="acoes-menu">
+        <ThemeToggle />
+        <Button
+          icon="pi pi-sign-out"
+          label="Sair"
+          text
+          severity="secondary"
+          @click="logout"
+        />
+      </div>
     </template>
   </Menubar>
 </template>
@@ -17,6 +20,7 @@
 import {ref} from "vue";
 import {useRouter} from 'vue-router';
 import Button from 'primevue/button';
+import ThemeToggle from '@/components/layout/ThemeToggle.vue';
 
 const router = useRouter();
 
@@ -52,9 +56,9 @@ const items = ref([
     ]
   },
   {
-    label: 'Profissões',
+    label: 'Especialidades',
     icon: 'pi pi-briefcase',
-    command: () => router.push('/profissoes')
+    command: () => router.push('/especialidades')
   },
   {
     label: 'Contato',
@@ -64,4 +68,9 @@ const items = ref([
 </script>
 
 <style scoped>
+.acoes-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 </style>

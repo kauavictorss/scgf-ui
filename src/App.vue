@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="app-shell">
     <MenuNavegacao/>
     <router-view/>
   </div>
@@ -8,3 +8,9 @@
 <script setup>
 import MenuNavegacao from './components/layout/MenuNavegacao.vue';
 </script>
+
+<style scoped>
+.app-shell {
+  min-height: 100vh;
+}
+</style>
