@@ -1,10 +1,10 @@
 <template>
   <div class="card">
-    <MenuBar/>
+    <MenuNavegacao/>
     <router-view/>
   </div>
 </template>
 
 <script setup>
-import MenuBar from './components/MenuBar.vue';
+import MenuNavegacao from './components/layout/MenuNavegacao.vue';
 </script>

@@ -1,29 +1,54 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import ConsFuncAtivos from '@/components/dataTables/ConsFuncAtivos.vue';
-import ConsFuncInativos from '@/components/dataTables/ConsFuncInativos.vue';
-import CadastrarFunc from '@/components/dataTables/CadastrarFunc.vue';
+import ConsFuncAtivosView from '@/views/ConsFuncAtivosView.vue';
+import ConsFuncInativosView from '@/views/ConsFuncInativosView.vue';
+import ConsFuncCpfView from '@/views/ConsFuncCpfView.vue';
+import CadastrarFuncView from "@/views/CadastrarFuncView.vue";
+import HomeView from "@/views/HomeView.vue";
+import ConsTipoContaView from "@/views/ConsTipoContaView.vue";
+import ConsDadosContaView from "@/views/ConsDadosContaView.vue";
+import ConsProfissoesView from "@/views/ConsProfissoesView.vue";
 
 const routes = [
   {
-    path: '/funcionarios-ativos',
-    name: 'FuncionariosAtivos',
-    component: ConsFuncAtivos
-  },
-  {
-    path: '/funcionarios-inativos',
-    name: 'FuncionariosInativos',
-    component: ConsFuncInativos
+    path: '/home',
+    name: 'Home',
+    component: HomeView
   },
   {
     path: '/cadastrar-funcionario',
     name: 'CadastrarFuncionario',
-    component: CadastrarFunc
+    component: CadastrarFuncView
+  },
+  {
+    path: '/consultar-funcionarios-ativos',
+    name: 'FuncionariosAtivos',
+    component: ConsFuncAtivosView
+  },
+  {
+    path: '/consultar-funcionarios-inativos',
+    name: 'FuncionariosInativos',
+    component: ConsFuncInativosView
   },
   {
     path: '/consultar-cpf',
     name: 'ConsultarFuncionarioCpf',
-    component: CadastrarFunc
+    component: ConsFuncCpfView
   },
+  {
+    path: '/consultar-dados-conta',
+    name: 'ConsultarDadosConta',
+    component: ConsDadosContaView
+  },
+  {
+    path: '/consultar-tipo-conta',
+    name: 'ConsultarTipoConta',
+    component: ConsTipoContaView
+  },
+  {
+    path: '/profissoes',
+    name: 'Profissoes',
+    component: ConsProfissoesView
+  }
 ];
 
 const router = createRouter({
