@@ -48,21 +48,6 @@ const items = ref([
         label: 'Inativos',
         icon: 'pi pi-times',
         command: () => router.push('/consultar-funcionarios-inativos')
-      },
-      {
-        label: 'Cpf',
-        icon: 'pi pi-id-card',
-        command: () => router.push('/consultar-cpf')
-      },
-      {
-        label: 'Dados da Conta',
-        icon: 'pi pi-wallet',
-        command: () => router.push('/consultar-dados-conta')
-      },
-      {
-        label: 'Tipo de Conta',
-        icon: 'pi pi-credit-card',
-        command: () => router.push('/consultar-tipo-conta')
       }
     ]
   },

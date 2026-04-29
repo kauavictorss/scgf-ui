@@ -1,25 +1,129 @@
 <template>
-  <h1>Funcionários Inativos</h1>
+  <div class="cabecalho">
+    <h1>Funcionários Inativos</h1>
+    <BarraPesquisa
+      v-model="termoBuscaInput"
+      placeholder="Filtrar por CPF, nome, email ou especialidade"
+      @buscar="aplicarBusca"
+    />
+  </div>
+  <p v-if="erroLista" class="erro">{{ erroLista }}</p>
   <div class="card">
-    <DataTable :value="funcionarios" tableStyle="min-width: 50rem">
+    <DataTable
+      :value="funcionariosFiltrados"
+      :loading="carregandoLista"
+      tableStyle="min-width: 50rem"
+      @row-click="abrirDetalhes"
+    >
       <Column field="cpf" header="Cpf" sortable="" style="width: 20%" />
       <Column field="nome" header="Nome" sortable="" style="width: 20%" />
       <Column field="email" header="Email" sortable="" style="width: 20%" />
       <Column field="especialidade" header="Especialidade" sortable="" style="width: 20%" />
     </DataTable>
   </div>
+
+  <ModalDetalhes
+    v-model:visible="mostrarDetalhes"
+    :funcionario="detalheFuncionario"
+    :loading="carregandoDetalhes"
+    :erro="erroDetalhes"
+  />
 </template>
 
 <script setup>
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import { ref, onMounted } from 'vue';
+import { computed, ref, onMounted } from 'vue';
+import BarraPesquisa from '@/components/consultas/BarraPesquisa.vue';
+import ModalDetalhes from '@/components/consultas/ModalDetalhes.vue';
 import ApiService from '@/service/ApiService.js';
 
 const funcionarios = ref([]);
+const termoBuscaInput = ref('');
+const termoBusca = ref('');
+const carregandoLista = ref(false);
+const erroLista = ref('');
+const mostrarDetalhes = ref(false);
+const carregandoDetalhes = ref(false);
+const erroDetalhes = ref('');
+const detalheFuncionario = ref(null);
+
+const aplicarBusca = () => {
+  termoBusca.value = termoBuscaInput.value;
+};
+
+const funcionariosFiltrados = computed(() => {
+  const termo = termoBusca.value.trim().toLowerCase();
+  if (!termo) {
+    return funcionarios.value;
+  }
+
+  return funcionarios.value.filter((funcionario) => {
+    const campos = [
+      funcionario.cpf,
+      funcionario.nome,
+      funcionario.email,
+      funcionario.especialidade
+    ];
+    return campos.some((valor) => String(valor || '').toLowerCase().includes(termo));
+  });
+});
 
 onMounted(async () => {
-  const response = await ApiService.listarFuncionariosInativos();
-  funcionarios.value = response.data.content || response.data || [];
+  carregandoLista.value = true;
+  erroLista.value = '';
+
+  try {
+    const response = await ApiService.listarFuncionariosInativos();
+    funcionarios.value = response.data.content || response.data || [];
+  } catch (error) {
+    erroLista.value = 'Não foi possível carregar os funcionários inativos.';
+    console.error('Erro ao listar funcionários inativos:', error);
+  } finally {
+    carregandoLista.value = false;
+  }
 });
+
+const abrirDetalhes = async (event) => {
+  const funcionario = event.data;
+  mostrarDetalhes.value = true;
+  carregandoDetalhes.value = true;
+  erroDetalhes.value = '';
+  detalheFuncionario.value = { ...funcionario };
+
+  try {
+    const response = await ApiService.buscarDadosContaFuncionario(funcionario.cpf);
+    const detalhes = Array.isArray(response.data) ? response.data[0] : response.data;
+
+    detalheFuncionario.value = {
+      ...funcionario,
+      ...detalhes
+    };
+  } catch (error) {
+    erroDetalhes.value = 'Não foi possível carregar os detalhes deste funcionário.';
+    console.error('Erro ao buscar detalhes do funcionário:', error);
+  } finally {
+    carregandoDetalhes.value = false;
+  }
+};
 </script>
+
+<style scoped>
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2.75rem;
+  margin-bottom: 1rem;
+}
+
+.cabecalho h1 {
+  margin: 0;
+}
+
+.erro {
+  color: #b91c1c;
+  margin-bottom: 0.75rem;
+}
+</style>
