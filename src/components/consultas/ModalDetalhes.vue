@@ -1,5 +1,6 @@
 <template>
   <Dialog
+    class="modal-detalhes"
     :visible="visible"
     modal
     header="Detalhes"
@@ -48,6 +49,23 @@ const valorOuPadrao = (valor) => {
   return valor === null || valor === undefined || valor === '' ? 'Não informado' : valor;
 };
 
+const descricaoEspecialidade = (especialidade) => {
+  if (!especialidade) {
+    return 'Não informado';
+  }
+
+  if (typeof especialidade === 'string') {
+    return especialidade;
+  }
+
+  return (
+    especialidade.descricao
+    || especialidade.label
+    || especialidade.nome
+    || 'Não informado'
+  );
+};
+
 const linhasDetalhes = computed(() => {
   const funcionario = props.funcionario;
   if (!funcionario) {
@@ -57,8 +75,9 @@ const linhasDetalhes = computed(() => {
   return [
     { chave: 'nome', label: 'Nome', valor: valorOuPadrao(funcionario.nome) },
     { chave: 'cpf', label: 'CPF', valor: valorOuPadrao(funcionario.cpf) },
+    { chave: 'idade', label: 'Idade', valor: valorOuPadrao(funcionario.idade) },
     { chave: 'email', label: 'Email', valor: valorOuPadrao(funcionario.email) },
-    { chave: 'especialidade', label: 'Especialidade', valor: valorOuPadrao(funcionario.especialidade) },
+    { chave: 'especialidade', label: 'Especialidade', valor: descricaoEspecialidade(funcionario.especialidade) },
     { chave: 'numConta', label: 'Num. conta', valor: valorOuPadrao(funcionario.conta?.numConta) },
     { chave: 'agencia', label: 'Agência', valor: valorOuPadrao(funcionario.conta?.agencia) },
     { chave: 'tipoConta', label: 'Tipo da conta', valor: valorOuPadrao(funcionario.conta?.tipoConta) },
@@ -75,6 +94,11 @@ const linhasDetalhes = computed(() => {
 </script>
 
 <style scoped>
+:global(.modal-detalhes .p-dialog-title) {
+  font-size: 1.65rem;
+  font-weight: 600;
+}
+
 .erro {
   color: #b91c1c;
   margin-bottom: 0.75rem;

@@ -18,7 +18,11 @@
       <Column field="cpf" header="Cpf" sortable="" style="width: 20%" />
       <Column field="nome" header="Nome" sortable="" style="width: 20%" />
       <Column field="email" header="Email" sortable="" style="width: 20%" />
-      <Column field="especialidade" header="Especialidade" sortable="" style="width: 20%" />
+      <Column field="especialidade" header="Especialidade" sortable="" style="width: 20%">
+        <template #body="{ data }">
+          {{ obterDescricaoEspecialidade(data.especialidade) }}
+        </template>
+      </Column>
     </DataTable>
   </div>
 
@@ -52,6 +56,18 @@ const aplicarBusca = () => {
   termoBusca.value = termoBuscaInput.value;
 };
 
+const obterDescricaoEspecialidade = (especialidade) => {
+  if (!especialidade) {
+    return '';
+  }
+
+  if (typeof especialidade === 'string') {
+    return especialidade;
+  }
+
+  return especialidade.descricao || especialidade.label || especialidade.nome || '';
+};
+
 const funcionariosFiltrados = computed(() => {
   const termo = termoBusca.value.trim().toLowerCase();
   if (!termo) {
@@ -63,7 +79,7 @@ const funcionariosFiltrados = computed(() => {
       funcionario.cpf,
       funcionario.nome,
       funcionario.email,
-      funcionario.especialidade
+      obterDescricaoEspecialidade(funcionario.especialidade)
     ];
     return campos.some((valor) => String(valor || '').toLowerCase().includes(termo));
   });
@@ -92,7 +108,7 @@ const abrirDetalhes = async (event) => {
   detalheFuncionario.value = { ...funcionario };
 
   try {
-    const response = await ApiService.buscarDadosContaFuncionario(funcionario.cpf);
+    const response = await ApiService.listarDetalhesFuncionario(funcionario.cpf);
     const detalhes = Array.isArray(response.data) ? response.data[0] : response.data;
 
     detalheFuncionario.value = {

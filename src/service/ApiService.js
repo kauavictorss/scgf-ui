@@ -11,6 +11,9 @@ const ApiService = {
     cadastrarFuncionario(dados) {
         return api.post('/funcionarios', dados);
     },
+    listarDetalhesFuncionario(cpf) {
+        return api.get(`/funcionarios/listar/detalhes/${cpf}`);
+    },
     listarFuncionariosAtivos() {
         return api.get('/funcionarios/listar/ativos');
     },
@@ -22,6 +25,9 @@ const ApiService = {
     },
     buscarDadosContaFuncionario(cpf) {
         return api.get(`/funcionarios/dados-conta/${cpf}`);
+    },
+    listarEspecialidades() {
+        return api.get('/funcionarios/listar/especialidades');
     },
     listarFuncionariosPorEspecialidade(especialidade) {
         return api.get(`/funcionarios/listar/especialidade/${especialidade}`);
