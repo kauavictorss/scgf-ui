@@ -142,4 +142,8 @@ const abrirDetalhes = async (event) => {
   color: #b91c1c;
   margin-bottom: 0.75rem;
 }
+
+:deep(.p-datatable .p-datatable-tbody > tr) {
+  cursor: pointer;
+}
 </style>
