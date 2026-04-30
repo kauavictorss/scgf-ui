@@ -37,9 +37,9 @@ body {
 
 #app {
     width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 1.5rem 2rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.25rem 2rem 0;
     display: block !important;
     grid-template-columns: none !important;
     font-weight: normal;
@@ -113,6 +113,6 @@ a,
 
 @media (max-width: 768px) {
     #app {
-        padding: 1rem;
+        padding: 1rem 1rem 0;
     }
 }

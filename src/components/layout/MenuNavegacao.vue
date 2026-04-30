@@ -68,6 +68,15 @@ const items = ref([
 </script>
 
 <style scoped>
+.titulo {
+  margin: 0 0 0.85rem;
+}
+
+:deep(.p-menubar) {
+  margin-top: 0.35rem;
+  margin-bottom: 1.35rem;
+}
+
 .acoes-menu {
   display: flex;
   align-items: center;

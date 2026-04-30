@@ -130,7 +130,7 @@ const abrirDetalhes = async (event) => {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  margin-top: 2.75rem;
+  margin-top: 1.9rem;
   margin-bottom: 1rem;
 }
 
