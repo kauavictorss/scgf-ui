@@ -37,19 +37,24 @@ const items = ref([
   {
     label: 'Cadastro',
     icon: 'pi pi-plus',
-    command: () => router.push('/cadastrar-funcionario')
+    items: [
+      {
+        label: 'Cadastrar Funcionário',
+        command: () => router.push('/cadastrar-funcionario')
+      }
+    ]
   },
   {
     label: 'Consultas',
     icon: 'pi pi-search',
     items: [
       {
-        label: 'Ativos',
+        label: 'Funcionários Ativos',
         icon: 'pi pi-check',
         command: () => router.push('/consultar-funcionarios-ativos')
       },
       {
-        label: 'Inativos',
+        label: 'Funcionários Inativos',
         icon: 'pi pi-times',
         command: () => router.push('/consultar-funcionarios-inativos')
       }
