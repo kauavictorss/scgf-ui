@@ -2,22 +2,22 @@
   <div class="cabecalho">
     <h1>Especialidades</h1>
     <BarraPesquisa
-      v-model="termoBuscaInput"
-      placeholder="Filtrar por código ou descrição"
-      @buscar="aplicarBusca"
+        v-model="termoBuscaInput"
+        placeholder="Filtrar por código ou descrição"
+        @buscar="aplicarBusca"
     />
   </div>
   <p v-if="erro" class="erro">{{ erro }}</p>
   <div class="card">
     <DataTable :value="especialidadesFiltradas" :loading="carregando" tableStyle="min-width: 50rem">
-      <Column field="codigo" header="Código" sortable style="width: 40%" />
-      <Column field="descricao" header="Descrição" sortable style="width: 60%" />
+      <Column field="codigo" header="Código" sortable style="width: 40%"/>
+      <Column field="descricao" header="Descrição" sortable style="width: 60%"/>
     </DataTable>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import ApiService from '@/service/ApiService.js';
@@ -41,15 +41,15 @@ const especialidadesFiltradas = computed(() => {
 
   return especialidades.value.filter((especialidade) => {
     return (
-      String(especialidade.codigo || '').toLowerCase().includes(termo) ||
-      String(especialidade.descricao || '').toLowerCase().includes(termo)
+        String(especialidade.codigo || '').toLowerCase().includes(termo) ||
+        String(especialidade.descricao || '').toLowerCase().includes(termo)
     );
   });
 });
 
 const paraLinhaEspecialidade = (item) => {
   if (typeof item === 'string') {
-    return { codigo: item, descricao: item };
+    return {codigo: item, descricao: item};
   }
 
   return {

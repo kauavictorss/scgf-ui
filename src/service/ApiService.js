@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080', // URL base do seu backend
-  headers: {
-    'Content-Type': 'application/json',
-  },
+    baseURL: 'http://localhost:8080', // URL base do backend
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
 const ApiService = {
@@ -20,20 +20,8 @@ const ApiService = {
     listarFuncionariosInativos() {
         return api.get('/funcionarios/listar/inativos');
     },
-    buscarFuncionarioPorCpf(cpf) {
-        return api.get(`/funcionarios/cpf/${cpf}`);
-    },
-    buscarDadosContaFuncionario(cpf) {
-        return api.get(`/funcionarios/dados-conta/${cpf}`);
-    },
     listarEspecialidades() {
         return api.get('/funcionarios/listar/especialidades');
-    },
-    listarFuncionariosPorEspecialidade(especialidade) {
-        return api.get(`/funcionarios/listar/especialidade/${especialidade}`);
-    },
-    listarFuncionariosPorTipoDeConta(tpConta) {
-        return api.get(`/funcionarios/listar/tipo-conta/${tpConta}`);
     },
     atualizarFuncionario(cpf, dados) {
         return api.put(`/funcionarios/${cpf}`, dados);

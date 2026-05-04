@@ -2,22 +2,22 @@
   <div class="cabecalho">
     <h1>Funcionários Ativos</h1>
     <BarraPesquisa
-      v-model="termoBuscaInput"
-      placeholder="Filtrar por CPF, nome, email ou especialidade"
-      @buscar="aplicarBusca"
+        v-model="termoBuscaInput"
+        placeholder="Filtrar por CPF, nome, email ou especialidade"
+        @buscar="aplicarBusca"
     />
   </div>
   <p v-if="erroLista" class="erro">{{ erroLista }}</p>
   <div class="card">
     <DataTable
-      :value="funcionariosFiltrados"
-      :loading="carregandoLista"
-      tableStyle="min-width: 50rem"
-      @row-click="abrirDetalhes"
+        :value="funcionariosFiltrados"
+        :loading="carregandoLista"
+        tableStyle="min-width: 50rem"
+        @row-click="abrirDetalhes"
     >
-      <Column field="cpf" header="Cpf" sortable="" style="width: 20%" />
-      <Column field="nome" header="Nome" sortable="" style="width: 20%" />
-      <Column field="email" header="Email" sortable="" style="width: 20%" />
+      <Column field="cpf" header="Cpf" sortable="" style="width: 20%"/>
+      <Column field="nome" header="Nome" sortable="" style="width: 20%"/>
+      <Column field="email" header="Email" sortable="" style="width: 20%"/>
       <Column field="especialidade" header="Especialidade" sortable="" style="width: 20%">
         <template #body="{ data }">
           {{ obterDescricaoEspecialidade(data.especialidade) }}
@@ -27,17 +27,17 @@
   </div>
 
   <ModalDetalhes
-    v-model:visible="mostrarDetalhes"
-    :funcionario="detalheFuncionario"
-    :loading="carregandoDetalhes"
-    :erro="erroDetalhes"
+      v-model:visible="mostrarDetalhes"
+      :funcionario="detalheFuncionario"
+      :loading="carregandoDetalhes"
+      :erro="erroDetalhes"
   />
 </template>
 
 <script setup>
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import { computed, ref, onMounted } from 'vue';
+import {computed, ref, onMounted} from 'vue';
 import BarraPesquisa from '@/components/consultas/BarraPesquisa.vue';
 import ModalDetalhes from '@/components/consultas/ModalDetalhes.vue';
 import ApiService from '@/service/ApiService.js';
@@ -105,7 +105,7 @@ const abrirDetalhes = async (event) => {
   mostrarDetalhes.value = true;
   carregandoDetalhes.value = true;
   erroDetalhes.value = '';
-  detalheFuncionario.value = { ...funcionario };
+  detalheFuncionario.value = {...funcionario};
 
   try {
     const response = await ApiService.listarDetalhesFuncionario(funcionario.cpf);
