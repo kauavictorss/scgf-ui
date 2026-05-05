@@ -80,33 +80,33 @@
         {{ obterValidacaoCampo('endereco.logradouro').mensagem }}
       </small>
     </div>
-     <div class="campo">
-       <label for="bairro">Bairro</label>
-       <InputText id="bairro" v-model="formulario.endereco.bairro"
-                  :invalid="obterValidacaoCampo('endereco.bairro').invalido"
-                  @blur="marcarCampoTocado('endereco.bairro')"/>
-       <small v-if="obterValidacaoCampo('endereco.bairro').invalido" class="erro-label">
-         {{ obterValidacaoCampo('endereco.bairro').mensagem }}
-       </small>
-     </div>
-     <div class="campo">
-       <label for="cidade">Cidade</label>
-       <InputText id="cidade" v-model="formulario.endereco.cidade"
-                  :invalid="obterValidacaoCampo('endereco.cidade').invalido"
-                  @blur="marcarCampoTocado('endereco.cidade')"/>
-       <small v-if="obterValidacaoCampo('endereco.cidade').invalido" class="erro-label">
-         {{ obterValidacaoCampo('endereco.cidade').mensagem }}
-       </small>
-     </div>
-     <div class="campo">
-       <label for="uf">UF</label>
-       <InputText id="uf" v-model="formulario.endereco.uf" maxlength="2" @input="normalizarUf"
-                  :invalid="obterValidacaoCampo('endereco.uf').invalido"
-                  @blur="marcarCampoTocado('endereco.uf')"/>
-       <small v-if="obterValidacaoCampo('endereco.uf').invalido" class="erro-label">
-         {{ obterValidacaoCampo('endereco.uf').mensagem }}
-       </small>
-     </div>
+    <div class="campo">
+      <label for="bairro">Bairro</label>
+      <InputText id="bairro" v-model="formulario.endereco.bairro"
+                 :invalid="obterValidacaoCampo('endereco.bairro').invalido"
+                 @blur="marcarCampoTocado('endereco.bairro')"/>
+      <small v-if="obterValidacaoCampo('endereco.bairro').invalido" class="erro-label">
+        {{ obterValidacaoCampo('endereco.bairro').mensagem }}
+      </small>
+    </div>
+    <div class="campo">
+      <label for="cidade">Cidade</label>
+      <InputText id="cidade" v-model="formulario.endereco.cidade"
+                 :invalid="obterValidacaoCampo('endereco.cidade').invalido"
+                 @blur="marcarCampoTocado('endereco.cidade')"/>
+      <small v-if="obterValidacaoCampo('endereco.cidade').invalido" class="erro-label">
+        {{ obterValidacaoCampo('endereco.cidade').mensagem }}
+      </small>
+    </div>
+    <div class="campo">
+      <label for="uf">UF</label>
+      <InputText id="uf" v-model="formulario.endereco.uf" maxlength="2" @input="normalizarUf"
+                 :invalid="obterValidacaoCampo('endereco.uf').invalido"
+                 @blur="marcarCampoTocado('endereco.uf')"/>
+      <small v-if="obterValidacaoCampo('endereco.uf').invalido" class="erro-label">
+        {{ obterValidacaoCampo('endereco.uf').mensagem }}
+      </small>
+    </div>
     <div class="campo">
       <label for="numero">Número</label>
       <InputText id="numero" v-model="formulario.endereco.numero"
@@ -182,7 +182,7 @@ import InputMask from 'primevue/inputmask';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import TabMenu from 'primevue/tabmenu';
-import { extrairMensagemPorCampo } from '@/utils/msgErros';
+import {extrairMensagemPorCampo} from '@/utils/msgErros';
 
 const props = defineProps({
   loading: {
@@ -223,14 +223,14 @@ const tiposConta = [
 const especialidadesComSelecione = computed(() => {
   const opcoes = props.especialidadesOptions || [];
   return [
-    { label: 'Selecione', value: '' },
+    {label: 'Selecione', value: ''},
     ...opcoes
   ];
 });
 
 // Computed para adicionar opção "Selecione" nos tipos de conta
 const tiposContaComSelecione = computed(() => [
-  { label: 'Selecione', value: '' },
+  {label: 'Selecione', value: ''},
   ...tiposConta
 ]);
 
@@ -331,7 +331,7 @@ const estaCampoVazio = (campo) => {
   if (campo === 'conta.agencia') return !formulario.value.conta.agencia?.trim();
   if (campo === 'conta.tipoConta') return !formulario.value.conta.tipoConta?.trim();
   if (campo === 'conta.salario') return !formulario.value.conta.salario;
-  
+
   const valor = formulario.value[campo];
   if (typeof valor === 'string') return !valor?.trim();
   return !valor;
@@ -340,32 +340,32 @@ const estaCampoVazio = (campo) => {
 // Validações específicas por campo
 const validarCampo = (campo) => {
   if (campo === 'idade') {
-    if (estaCampoVazio('idade')) return { invalido: true, mensagem: 'Idade é obrigatória' };
-    if (formulario.value.idade < 18) return { invalido: true, mensagem: 'O funcionário deve ser maior de 18 anos' };
-    if (formulario.value.idade > 120) return { invalido: true, mensagem: 'Idade inválida' };
-    return { invalido: false, mensagem: '' };
+    if (estaCampoVazio('idade')) return {invalido: true, mensagem: 'Idade é obrigatória'};
+    if (formulario.value.idade < 18) return {invalido: true, mensagem: 'O funcionário deve ser maior de 18 anos'};
+    if (formulario.value.idade > 120) return {invalido: true, mensagem: 'Idade inválida'};
+    return {invalido: false, mensagem: ''};
   }
 
   if (campo === 'cpf') {
-    if (estaCampoVazio('cpf')) return { invalido: true, mensagem: 'CPF é obrigatório' };
-    return { invalido: false, mensagem: '' };
+    if (estaCampoVazio('cpf')) return {invalido: true, mensagem: 'CPF é obrigatório'};
+    return {invalido: false, mensagem: ''};
   }
 
   if (campo === 'email') {
-    if (estaCampoVazio('email')) return { invalido: true, mensagem: 'Email é obrigatório' };
-    return { invalido: false, mensagem: '' };
+    if (estaCampoVazio('email')) return {invalido: true, mensagem: 'Email é obrigatório'};
+    return {invalido: false, mensagem: ''};
   }
 
   if (campo === 'especialidade') {
-    if (estaCampoVazio('especialidade')) return { invalido: true, mensagem: 'Especialidade é obrigatória' };
-    return { invalido: false, mensagem: '' };
+    if (estaCampoVazio('especialidade')) return {invalido: true, mensagem: 'Especialidade é obrigatória'};
+    return {invalido: false, mensagem: ''};
   }
 
   // Para campos de endereço e conta, apenas verifica se está vazio
   if (estaCampoVazio(campo)) {
-    return { invalido: true, mensagem: extrairMensagemPorCampo(campo) };
+    return {invalido: true, mensagem: extrairMensagemPorCampo(campo)};
   }
-  return { invalido: false, mensagem: '' };
+  return {invalido: false, mensagem: ''};
 };
 
 // Computed para validação geral
@@ -386,18 +386,18 @@ const marcarCampoTocado = (campo) => {
 const obterValidacaoCampo = (campo) => {
   // Se vem erro do backend, sempre mostra como inválido
   if (props.camposComErro.includes(campo)) {
-    return { 
-      invalido: true, 
+    return {
+      invalido: true,
       mensagem: extrairMensagemPorCampo(campo)
     };
   }
-  
+
   // Se o campo é obrigatório e foi tocado, valida
   if (camposObrigatorios.includes(campo) && camposTocados.value[campo]) {
     return validarCampo(campo);
   }
-  
-  return { invalido: false, mensagem: '' };
+
+  return {invalido: false, mensagem: ''};
 };
 
 const numeroOuNulo = (valor) => {

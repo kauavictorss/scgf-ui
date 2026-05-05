@@ -58,7 +58,7 @@ const extrairErros = (errorApi) => {
   // Se é erro genérico (string)
   if (typeof data === 'string') {
     mensagens.push(data);
-    return { mensagens, campos };
+    return {mensagens, campos};
   }
 
   // Extrai campos com erro
@@ -104,7 +104,7 @@ const confirmarCadastro = async (payload) => {
   } catch (errorApi) {
     const erroExtraido = extrairErros(errorApi);
     camposComErro.value = erroExtraido.campos;
-    
+
     // Prioriza mensagens de campo extraídas
     let mensagemExibir = '';
     if (erroExtraido.mensagens && erroExtraido.mensagens.length > 0) {
@@ -117,11 +117,11 @@ const confirmarCadastro = async (payload) => {
       // Fallback: tenta extrair mensagem geral
       mensagemExibir = extrairMensagemAmigavel(errorApi);
     }
-    
+
     // Detecta tipo de erro
     const tipo = mensagemExibir.toLowerCase().includes('já está registrado') ? 'aviso' : 'erro';
     toast.mostrar(mensagemExibir, tipo);
-    
+
     console.error('Erro ao cadastrar funcionário:', errorApi);
   } finally {
     carregando.value = false;
