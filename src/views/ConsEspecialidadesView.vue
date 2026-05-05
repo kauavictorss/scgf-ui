@@ -96,4 +96,20 @@ onMounted(async () => {
   color: #b91c1c;
   margin-bottom: 0.75rem;
 }
+
+.card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+:deep(.p-datatable .p-datatable-thead > tr > th),
+:deep(.p-datatable .p-datatable-tbody > tr > td) {
+  border-color: var(--app-border);
+}
+
+:deep(.p-datatable .p-datatable-thead > tr > th) {
+  background: var(--app-surface-alt);
+}
 </style>

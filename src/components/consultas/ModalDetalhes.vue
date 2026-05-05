@@ -49,6 +49,32 @@ const valorOuPadrao = (valor) => {
   return valor === null || valor === undefined || valor === '' ? 'Não informado' : valor;
 };
 
+const formatarCpf = (valor) => {
+  const digitos = String(valor ?? '').replace(/\D/g, '').slice(0, 11);
+
+  if (!digitos) {
+    return 'Não informado';
+  }
+
+  return digitos.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+};
+
+const valorMoedaFormatada = (valor) => {
+  if (valor === null || valor === undefined || valor === '') {
+    return 'Não informado';
+  }
+
+  const numero = Number(valor);
+  if (Number.isNaN(numero)) {
+    return String(valor);
+  }
+
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(numero);
+};
+
 const descricaoEspecialidade = (especialidade) => {
   if (!especialidade) {
     return 'Não informado';
@@ -74,14 +100,14 @@ const linhasDetalhes = computed(() => {
 
   return [
     {chave: 'nome', label: 'Nome', valor: valorOuPadrao(funcionario.nome)},
-    {chave: 'cpf', label: 'CPF', valor: valorOuPadrao(funcionario.cpf)},
+    {chave: 'cpf', label: 'CPF', valor: formatarCpf(funcionario.cpf)},
     {chave: 'idade', label: 'Idade', valor: valorOuPadrao(funcionario.idade)},
     {chave: 'email', label: 'Email', valor: valorOuPadrao(funcionario.email)},
     {chave: 'especialidade', label: 'Especialidade', valor: descricaoEspecialidade(funcionario.especialidade)},
     {chave: 'numConta', label: 'Num. conta', valor: valorOuPadrao(funcionario.conta?.numConta)},
     {chave: 'agencia', label: 'Agência', valor: valorOuPadrao(funcionario.conta?.agencia)},
     {chave: 'tipoConta', label: 'Tipo da conta', valor: valorOuPadrao(funcionario.conta?.tipoConta)},
-    {chave: 'salario', label: 'Salário', valor: valorOuPadrao(funcionario.conta?.salario)},
+    {chave: 'salario', label: 'Salário', valor: valorMoedaFormatada(funcionario.conta?.salario)},
     {chave: 'cep', label: 'CEP', valor: valorOuPadrao(funcionario.endereco?.cep)},
     {chave: 'logradouro', label: 'Logradouro', valor: valorOuPadrao(funcionario.endereco?.logradouro)},
     {chave: 'numero', label: 'Número', valor: valorOuPadrao(funcionario.endereco?.numero)},
@@ -113,7 +139,7 @@ const linhasDetalhes = computed(() => {
 .detalhes-tabela td {
   text-align: left;
   padding: 0.65rem 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid color-mix(in srgb, var(--app-border) 65%, var(--app-surface));
 }
 
 .detalhes-tabela th {

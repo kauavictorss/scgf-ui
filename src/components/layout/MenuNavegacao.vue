@@ -80,6 +80,8 @@ const items = ref([
 :deep(.p-menubar) {
   margin-top: 0.35rem;
   margin-bottom: 1.35rem;
+  border: 1px solid var(--app-border);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 .acoes-menu {

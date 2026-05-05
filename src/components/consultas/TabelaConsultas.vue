@@ -7,12 +7,16 @@
         tableStyle="min-width: 50rem"
         @row-click="emit('row-click', $event)"
       >
-        <Column field="cpf" header="CPF" sortable style="width: 20%" />
+        <Column field="cpf" header="CPF" sortable style="width: 20%">
+          <template #body="{ data }">
+            {{ formatarCpf(data.cpf) }}
+          </template>
+        </Column>
         <Column field="nome" header="Nome" sortable style="width: 20%" />
         <Column field="email" header="Email" sortable style="width: 20%" />
-        <Column field="especialidade" header="Especialidade" sortable style="width: 20%">
+        <Column field="especialidadeDescricao" header="Especialidade" sortable style="width: 20%">
           <template #body="{ data }">
-            {{ obterDescricaoEspecialidade(data.especialidade) }}
+            {{ data.especialidadeDescricao }}
           </template>
         </Column>
       </DataTable>
@@ -54,8 +58,23 @@ const itensPorPagina = 10;
 const paginaAtual = computed(() => {
   const inicio = primeiroItem.value;
   const fim = inicio + itensPorPagina;
-  return props.dados.slice(inicio, fim);
+  return props.dados
+    .map((item) => ({
+      ...item,
+      especialidadeDescricao: obterDescricaoEspecialidade(item.especialidade)
+    }))
+    .slice(inicio, fim);
 });
+
+const formatarCpf = (valor) => {
+  const digitos = String(valor ?? '').replace(/\D/g, '').slice(0, 11);
+
+  if (!digitos) {
+    return '';
+  }
+
+  return digitos.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+};
 
 const obterDescricaoEspecialidade = (especialidade) => {
   if (!especialidade) {
@@ -99,6 +118,10 @@ const atualizarPagina = (event) => {
 
 :deep(.p-datatable .p-datatable-tbody > tr) {
   cursor: pointer;
+}
+
+:deep(.p-datatable .p-datatable-tbody > tr:hover) {
+  background: color-mix(in srgb, var(--app-surface-alt) 72%, var(--app-border));
 }
 
 :deep(.p-paginator) {
