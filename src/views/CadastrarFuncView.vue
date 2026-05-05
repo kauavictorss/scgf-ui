@@ -29,7 +29,7 @@
 import {ref, inject} from 'vue';
 import Button from 'primevue/button';
 import ApiService from '@/service/ApiService.js';
-import {extrairMensagemAmigavel} from '@/utils/msgErros.js';
+import {extrairMensagemAmigavel, extrairMensagemPorCampo} from '@/utils/msgErros.js';
 import BlocoFormCadastro from '@/components/cadastro/BlocoFormCadastro.vue';
 
 const modoTela = ref('');
@@ -52,15 +52,16 @@ const extrairErros = (errorApi) => {
     };
   }
 
+  const campos = [];
+  const mensagens = [];
+
+  // Se é erro genérico (string)
   if (typeof data === 'string') {
-    return {
-      mensagens: [data],
-      campos: []
-    };
+    mensagens.push(data);
+    return { mensagens, campos };
   }
 
-  const campos = [];
-
+  // Extrai campos com erro
   const adicionarCampo = (valor) => {
     if (typeof valor === 'string' && valor.trim()) {
       campos.push(valor.trim());
@@ -69,14 +70,22 @@ const extrairErros = (errorApi) => {
 
   if (Array.isArray(data.errors)) {
     data.errors.forEach((item) => {
-      adicionarCampo(item?.field || item?.campo || item?.property || item?.path);
+      const nomeCampo = item?.field || item?.campo || item?.property || item?.path;
+      if (nomeCampo) {
+        adicionarCampo(nomeCampo);
+        // Gera mensagem amigável para este campo
+        const mensagemAmigavel = extrairMensagemPorCampo(nomeCampo);
+        if (!mensagens.includes(mensagemAmigavel)) {
+          mensagens.push(mensagemAmigavel);
+        }
+      }
     });
   }
 
   const camposSemDuplicados = [...new Set(campos)];
 
   return {
-    mensagens: [],
+    mensagens,
     campos: camposSemDuplicados
   };
 };
@@ -87,7 +96,7 @@ const confirmarCadastro = async (payload) => {
 
   try {
     await ApiService.cadastrarFuncionario(payload);
-    toast.value?.mostrar('Funcionário cadastrado com sucesso!', 'sucesso');
+    toast.mostrar('Funcionário cadastrado com sucesso!', 'sucesso');
     blocoCadastroRef.value?.resetForm();
     setTimeout(() => {
       modoTela.value = '';
@@ -95,11 +104,23 @@ const confirmarCadastro = async (payload) => {
   } catch (errorApi) {
     const erroExtraido = extrairErros(errorApi);
     camposComErro.value = erroExtraido.campos;
-    const mensagemAmigavel = extrairMensagemAmigavel(errorApi);
     
-    // Detecta se é aviso (CPF/email duplicado) ou erro genérico
-    const tipo = mensagemAmigavel.toLowerCase().includes('já está registrado') ? 'aviso' : 'erro';
-    toast.value?.mostrar(mensagemAmigavel, tipo);
+    // Prioriza mensagens de campo extraídas
+    let mensagemExibir = '';
+    if (erroExtraido.mensagens && erroExtraido.mensagens.length > 0) {
+      // Se houver múltiplas mensagens de campo, mostra a primeira + aviso
+      mensagemExibir = erroExtraido.mensagens[0];
+      if (erroExtraido.mensagens.length > 1) {
+        mensagemExibir += ` (e mais ${erroExtraido.mensagens.length - 1} campo(s) com erro)`;
+      }
+    } else {
+      // Fallback: tenta extrair mensagem geral
+      mensagemExibir = extrairMensagemAmigavel(errorApi);
+    }
+    
+    // Detecta tipo de erro
+    const tipo = mensagemExibir.toLowerCase().includes('já está registrado') ? 'aviso' : 'erro';
+    toast.mostrar(mensagemExibir, tipo);
     
     console.error('Erro ao cadastrar funcionário:', errorApi);
   } finally {
