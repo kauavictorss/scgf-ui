@@ -9,6 +9,7 @@
     --app-muted: #6c757d;
     --app-border: #dee2e6;
     --app-primary: #0d6efd;
+    --app-danger: #b91c1c;
 }
 
 [data-theme='dark'] {
@@ -19,6 +20,7 @@
     --app-muted: #adb5bd;
     --app-border: #495057;
     --app-primary: #6ea8fe;
+    --app-danger: #f87171;
 }
 
 html,

@@ -8,23 +8,11 @@
     />
   </div>
   <p v-if="erroLista" class="erro">{{ erroLista }}</p>
-  <div class="card">
-    <DataTable
-        :value="funcionariosFiltrados"
-        :loading="carregandoLista"
-        tableStyle="min-width: 50rem"
-        @row-click="abrirDetalhes"
-    >
-      <Column field="cpf" header="Cpf" sortable="" style="width: 20%"/>
-      <Column field="nome" header="Nome" sortable="" style="width: 20%"/>
-      <Column field="email" header="Email" sortable="" style="width: 20%"/>
-      <Column field="especialidade" header="Especialidade" sortable="" style="width: 20%">
-        <template #body="{ data }">
-          {{ obterDescricaoEspecialidade(data.especialidade) }}
-        </template>
-      </Column>
-    </DataTable>
-  </div>
+  <TabelaConsultas
+      :dados="funcionariosFiltrados"
+      :loading="carregandoLista"
+      @row-click="abrirDetalhes"
+  />
 
   <ModalDetalhes
       v-model:visible="mostrarDetalhes"
@@ -35,10 +23,9 @@
 </template>
 
 <script setup>
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
 import {computed, ref, onMounted} from 'vue';
 import BarraPesquisa from '@/components/consultas/BarraPesquisa.vue';
+import TabelaConsultas from '@/components/consultas/TabelaConsultas.vue';
 import ModalDetalhes from '@/components/consultas/ModalDetalhes.vue';
 import ApiService from '@/service/ApiService.js';
 
@@ -139,7 +126,7 @@ const abrirDetalhes = async (event) => {
 }
 
 .erro {
-  color: #b91c1c;
+  color: var(--app-danger);
   margin-bottom: 0.75rem;
 }
 
