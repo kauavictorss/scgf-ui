@@ -100,7 +100,7 @@ const linhasDetalhes = computed(() => {
 }
 
 .erro {
-  color: #b91c1c;
+  color: var(--app-danger);
   margin-bottom: 0.75rem;
 }
 

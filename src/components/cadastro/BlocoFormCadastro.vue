@@ -498,9 +498,10 @@ defineExpose({resetForm});
 }
 
 .erro-label {
-  color: #b91c1c;
-  font-size: 0.75rem;
-  font-weight: 500;
+  color: var(--app-danger);
+  font-size: 0.9rem;
+  line-height: 1.3;
+  font-weight: 600;
 }
 
 .acoes-form {

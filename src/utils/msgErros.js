@@ -1,4 +1,4 @@
-// Mapeia mensagens técnicas do backend para mensagens amigáveis
+// Mapeia mensagens técnicas do backend para mensagens amigáveis ao frontend
 const mensagensAmigaveis = {
     'duplicate cpf': 'Este CPF já está registrado no sistema',
     'duplicate email': 'Este email já está registrado no sistema',
@@ -20,7 +20,7 @@ const mensagensAmigaveis = {
 };
 
 // Mapeia nomes de campos técnicos para mensagens amigáveis
-const mensagensComPorCampo = {
+const mensagensPorCampo = {
     'cpf': 'CPF é obrigatório e deve ser válido',
     'nome': 'Nome é obrigatório',
     'idade': 'Idade é obrigatória e deve ser maior que 18 anos',
@@ -36,6 +36,28 @@ const mensagensComPorCampo = {
     'conta.tipoConta': 'Tipo de conta é obrigatório',
     'conta.salario': 'Salário é obrigatório e deve ser maior que zero'
 };
+
+const normalizarTexto = (valor) => {
+    if (!valor || typeof valor !== 'string') {
+        return '';
+    }
+
+    return valor
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[._-]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+};
+
+const mensagensAmigaveisNormalizadas = Object.fromEntries(
+    Object.entries(mensagensAmigaveis).map(([chave, mensagem]) => [normalizarTexto(chave), mensagem])
+);
+
+const mensagensPorCampoNormalizadas = Object.fromEntries(
+    Object.entries(mensagensPorCampo).map(([chave, mensagem]) => [normalizarTexto(chave), mensagem])
+);
 
 export const extrairMensagemAmigavel = (erro) => {
     const data = erro?.response?.data;
@@ -109,16 +131,16 @@ export const extrairMensagemPorCampo = (nomeCampo) => {
     }
 
     // Procura correspondência exata ou parcial
-    const campoLower = nomeCampo.toLowerCase().trim();
+    const campoNormalizado = normalizarTexto(nomeCampo);
 
     // Procura exata primeiro
-    if (mensagensComPorCampo[campoLower]) {
-        return mensagensComPorCampo[campoLower];
+    if (mensagensPorCampoNormalizadas[campoNormalizado]) {
+        return mensagensPorCampoNormalizadas[campoNormalizado];
     }
 
     // Procura parcial (case-insensitive)
-    for (const [campo, mensagem] of Object.entries(mensagensComPorCampo)) {
-        if (campoLower.includes(campo) || campo.includes(campoLower)) {
+    for (const [campo, mensagem] of Object.entries(mensagensPorCampoNormalizadas)) {
+        if (campoNormalizado.includes(campo) || campo.includes(campoNormalizado)) {
             return mensagem;
         }
     }
@@ -134,10 +156,10 @@ const normalizarMensagem = (mensagem) => {
         return 'Não foi possível processar sua solicitação';
     }
 
-    const lower = mensagem.toLowerCase();
+    const lower = normalizarTexto(mensagem);
 
     // Procura por chaves conhecidas no dicionário
-    for (const [chave, amigavel] of Object.entries(mensagensAmigaveis)) {
+    for (const [chave, amigavel] of Object.entries(mensagensAmigaveisNormalizadas)) {
         if (lower.includes(chave)) {
             return amigavel;
         }
