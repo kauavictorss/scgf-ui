@@ -61,6 +61,16 @@ a,
     }
 }
 
+[data-theme='light'] a:hover {
+    background-color: color-mix(in srgb, var(--app-primary) 22%, var(--app-surface));
+    border-radius: 0.35rem;
+}
+
+[data-theme='light'] .contato-item:hover {
+    background-color: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
+    border-color: color-mix(in srgb, var(--app-primary) 28%, var(--app-border));
+}
+
 .p-menubar,
 .p-dialog,
 .p-inputtext,

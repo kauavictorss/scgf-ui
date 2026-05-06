@@ -59,8 +59,6 @@ const paraLinhaEspecialidade = (item) => {
 };
 
 onMounted(async () => {
-  document.title = 'Consultar Especialidades';
-
   carregando.value = true;
   erro.value = '';
 

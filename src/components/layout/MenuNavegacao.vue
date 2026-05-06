@@ -1,19 +1,26 @@
 <template>
-  <h1 class="titulo">Sistema de Consultas e Gerenciamento de Funcionários</h1>
-  <Menubar :model="items">
-    <template #end>
-      <div class="acoes-menu">
-        <ThemeToggle />
-        <Button
-          icon="pi pi-sign-out"
-          label="Sair"
-          text
-          severity="secondary"
-          @click="logout"
-        />
-      </div>
-    </template>
-  </Menubar>
+  <div class="cabecalho-menu">
+    <Menubar :model="items">
+      <template #start>
+        <div class="marca-sistema" aria-label="SCGF">
+          <img src="/logo.png" alt="Logo do SCGF" class="marca-logo"/>
+          <span class="marca-texto">SCGF</span>
+        </div>
+      </template>
+      <template #end>
+        <div class="acoes-menu">
+          <ThemeToggle/>
+          <Button
+              icon="pi pi-sign-out"
+              label="Sair"
+              text
+              severity="secondary"
+              @click="logout"
+          />
+        </div>
+      </template>
+    </Menubar>
+  </div>
 </template>
 
 <script setup>
@@ -63,25 +70,63 @@ const items = ref([
   {
     label: 'Especialidades',
     icon: 'pi pi-briefcase',
-    command: () => router.push('/especialidades')
+    items: [
+      {
+        label: 'Especialidades',
+        command: () => router.push('/especialidades')
+      }
+    ]
   },
   {
-    label: 'Contato',
-    icon: 'pi pi-envelope'
+    label: 'Sobre',
+    icon: 'pi pi-info-circle',
+    items: [
+      {
+        label: 'Sobre o sistema',
+        command: () => router.push('/sobre')
+      }
+    ]
   },
 ]);
 </script>
 
 <style scoped>
-.titulo {
-  margin: 0 0 0.85rem;
+.cabecalho-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.marca-sistema {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding-right: 1rem;
+  margin-right: 1.25rem;
+  border-right: 1px solid var(--app-border);
+  user-select: none;
+}
+
+.marca-logo {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.marca-texto {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--app-text);
 }
 
 :deep(.p-menubar) {
-  margin-top: 0.35rem;
-  margin-bottom: 1.35rem;
+  margin: 0;
   border: 1px solid var(--app-border);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+:deep(.p-menubar .p-menubar-root-list) {
+  transform: translateX(-0.35rem);
 }
 
 .acoes-menu {
