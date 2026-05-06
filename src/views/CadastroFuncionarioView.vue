@@ -233,14 +233,12 @@ const salvarFuncionarioConsulta = async (payload) => {
   limparMensagensConsulta();
   carregandoConsulta.value = true;
 
-  const cpfFuncionario = normalizarCpf(payload?.cpf || funcionarioConsulta.value?.cpf);
-
   try {
     await ApiService.atualizarFuncionario(payload);
     toast.mostrar('Funcionário atualizado com sucesso!', 'sucesso');
     await carregarFuncionariosConsulta();
-    const response = await ApiService.listarDetalhesFuncionario(cpfFuncionario);
-    funcionarioConsulta.value = Array.isArray(response.data) ? response.data[0] : response.data;
+    funcionarioConsulta.value = null;
+    camposComErroConsulta.value = [];
   } catch (errorApi) {
     const erroExtraido = extrairErros(errorApi);
     camposComErroConsulta.value = erroExtraido.campos;
@@ -279,13 +277,13 @@ const excluirFuncionarioConsulta = async (cpf) => {
 
   try {
     await ApiService.removerFuncionario(cpfNormalizado);
-    toast.mostrar('Funcionário inativado com sucesso!', 'sucesso');
+    toast.mostrar('Funcionário excluído com sucesso!', 'sucesso');
     await carregarFuncionariosConsulta();
     limparConsulta();
   } catch (errorApi) {
     const mensagem = extrairMensagemAmigavel(errorApi);
     toast.mostrar(mensagem, 'erro');
-    console.error('Erro ao inativar funcionário:', errorApi);
+    console.error('Erro ao excluir funcionário:', errorApi);
   } finally {
     carregandoConsulta.value = false;
   }

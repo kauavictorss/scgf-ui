@@ -48,12 +48,13 @@
     <div class="campo">
       <label for="especialidade">Especialidade</label>
       <Select
-          id="especialidade"
+          inputId="especialidade"
           v-model="formulario.especialidade"
           :options="especialidadesComSelecione"
           optionLabel="label"
           optionValue="value"
           filter
+          emptyFilterMessage="Nenhum resultado encontrado"
           placeholder="Selecione"
           :invalid="obterValidacaoCampo('especialidade').invalido"
           @blur="marcarCampoTocado('especialidade')"
@@ -103,12 +104,18 @@
     </div>
     <div class="campo">
       <label for="uf">UF</label>
-      <InputText id="uf" v-model="formulario.endereco.uf" maxlength="2"
-                 @input="tratarUfInput"
-                 @keydown="bloquearTeclaCampo('somenteLetras', $event)"
-                 @paste="bloquearColagemCampo('somenteLetras', $event)"
-                  :invalid="obterValidacaoCampo('endereco.uf').invalido"
-                  @blur="marcarCampoTocado('endereco.uf')"/>
+      <Select
+          inputId="uf"
+          v-model="formulario.endereco.uf"
+          :options="ufsComSelecione"
+          optionLabel="label"
+          optionValue="value"
+          filter
+          emptyFilterMessage="Nenhum resultado encontrado"
+          placeholder="Selecione"
+          :invalid="obterValidacaoCampo('endereco.uf').invalido"
+          @blur="marcarCampoTocado('endereco.uf')"
+      />
       <small v-if="obterValidacaoCampo('endereco.uf').invalido" class="erro-label">
         {{ obterValidacaoCampo('endereco.uf').mensagem }}
       </small>
@@ -228,6 +235,12 @@ const tiposConta = [
   {label: 'Conta Salário', value: 'SALARIO'}
 ];
 
+const ufsBrasil = [
+  'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT',
+  'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO',
+  'RR', 'SC', 'SP', 'SE', 'TO'
+];
+
 // Computed para adicionar opção "Selecione" nas especialidades
 const especialidadesComSelecione = computed(() => {
   const opcoes = props.especialidadesOptions || [];
@@ -241,6 +254,11 @@ const especialidadesComSelecione = computed(() => {
 const tiposContaComSelecione = computed(() => [
   {label: 'Selecione', value: ''},
   ...tiposConta
+]);
+
+const ufsComSelecione = computed(() => [
+  {label: 'Selecione', value: ''},
+  ...ufsBrasil.map((uf) => ({label: uf, value: uf}))
 ]);
 
 const obterAbaPorCampo = (campo) => {
@@ -362,6 +380,17 @@ const validarCampo = (campo) => {
 
   if (campo === 'email') {
     if (estaCampoVazio('email')) return {invalido: true, mensagem: 'Email é obrigatório'};
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(formulario.value.email || '').trim())) {
+      return {invalido: true, mensagem: 'Email inválido'};
+    }
+    return {invalido: false, mensagem: ''};
+  }
+
+  if (campo === 'endereco.uf') {
+    if (estaCampoVazio('endereco.uf')) return {invalido: true, mensagem: 'UF é obrigatória'};
+    if (!ufsBrasil.includes(String(formulario.value.endereco.uf || '').trim().toUpperCase())) {
+      return {invalido: true, mensagem: 'UF inválida'};
+    }
     return {invalido: false, mensagem: ''};
   }
 
@@ -479,13 +508,6 @@ const tratarNomeInput = (event) => {
   formulario.value.nome = String(event?.target?.value || '').replace(/\d/g, '');
 };
 
-const tratarUfInput = (event) => {
-  formulario.value.endereco.uf = String(event?.target?.value || '')
-    .replace(/[^a-zA-Z]/g, '')
-    .toUpperCase()
-    .slice(0, 2);
-};
-
 const tratarNumeroEnderecoInput = (event) => {
   formulario.value.endereco.numero = String(event?.target?.value || '').replace(/\D/g, '');
 };
@@ -501,7 +523,7 @@ const montarPayload = () => ({
   },
   endereco: {
     ...formulario.value.endereco,
-    uf: String(formulario.value.endereco.uf || '').replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 2)
+    uf: String(formulario.value.endereco.uf || '').trim().toUpperCase()
   }
 });
 
@@ -572,6 +594,24 @@ defineExpose({resetForm});
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+}
+
+.campo label {
+  min-height: 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.campo :deep(.p-inputtext),
+.campo :deep(.p-inputmask),
+.campo :deep(.p-inputnumber-input),
+.campo :deep(.p-select) {
+  min-height: 2.75rem;
+}
+
+.campo :deep(.p-select .p-select-label) {
+  display: flex;
+  align-items: center;
 }
 
 .erro-label {
