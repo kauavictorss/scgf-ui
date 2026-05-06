@@ -1,13 +1,13 @@
 <template>
   <div class="barra-pesquisa">
     <InputText
-      :model-value="modelValue"
-      :placeholder="placeholder"
-      class="campo-busca"
-      @update:model-value="$emit('update:modelValue', $event)"
-      @keyup.enter="$emit('buscar')"
+        :model-value="modelValue"
+        :placeholder="placeholder"
+        class="campo-busca"
+        @input="atualizarValor"
+        @keyup.enter="$emit('buscar')"
     />
-    <Button :label="buttonLabel" icon="pi pi-search" @click="$emit('buscar')" />
+    <Button v-if="mostrarBotao" :label="buttonLabel" icon="pi pi-search" @click="$emit('buscar')"/>
   </div>
 </template>
 
@@ -15,7 +15,7 @@
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 
-defineProps({
+const props = defineProps({
   modelValue: {
     type: String,
     default: ''
@@ -27,10 +27,43 @@ defineProps({
   buttonLabel: {
     type: String,
     default: 'Buscar'
+  },
+  mostrarBotao: {
+    type: Boolean,
+    default: true
+  },
+  bloquearNumeros: {
+    type: Boolean,
+    default: false
+  },
+  somenteNumeros: {
+    type: Boolean,
+    default: false
   }
 });
 
-defineEmits(['update:modelValue', 'buscar']);
+const emit = defineEmits(['update:modelValue', 'buscar']);
+
+const atualizarValor = (valor) => {
+  const texto = String(valor?.target?.value ?? valor ?? '');
+
+  if (texto === '') {
+    emit('update:modelValue', '');
+    return;
+  }
+
+  if (props.somenteNumeros) {
+    emit('update:modelValue', texto.replace(/\D/g, ''));
+    return;
+  }
+
+  if (props.bloquearNumeros) {
+    emit('update:modelValue', texto.replace(/\d/g, ''));
+    return;
+  }
+
+  emit('update:modelValue', texto);
+};
 </script>
 
 <style scoped>

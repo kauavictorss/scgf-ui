@@ -23,11 +23,11 @@ const ApiService = {
     listarEspecialidades() {
         return api.get('/funcionarios/listar/especialidades');
     },
-    atualizarFuncionario(cpf, dados) {
-        return api.put(`/funcionarios/${cpf}`, dados);
+    atualizarFuncionario(dados) {
+        return api.put('/funcionarios/atualizar', dados);
     },
     removerFuncionario(cpf) {
-        return api.delete(`/funcionarios/${cpf}`);
+        return api.delete(`/funcionarios/remover/${cpf}`);
     }
 };
 

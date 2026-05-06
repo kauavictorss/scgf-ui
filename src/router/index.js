@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import ConsFuncAtivosView from '@/views/ConsFuncAtivosView.vue';
 import ConsFuncInativosView from '@/views/ConsFuncInativosView.vue';
-import CadastrarFuncView from "@/views/CadastrarFuncView.vue";
+import CadastroFuncionarioView from "@/views/CadastroFuncionarioView.vue";
 import HomeView from "@/views/HomeView.vue";
 import ConsEspecialidadesView from "@/views/ConsEspecialidadesView.vue";
 
@@ -14,7 +14,7 @@ const routes = [
   {
     path: '/cadastrar-funcionario',
     name: 'CadastrarFuncionario',
-    component: CadastrarFuncView
+    component: CadastroFuncionarioView
   },
   {
     path: '/consultar-funcionarios-ativos',
