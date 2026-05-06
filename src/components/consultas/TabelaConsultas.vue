@@ -24,10 +24,10 @@
 
     <Paginator
       v-model:first="primeiroItem"
-      :rows="10"
-      :totalRecords="dados.length"
+      :rows="rows"
+      :totalRecords="totalRegistros"
       @page="atualizarPagina"
-      template="PrevPageLink PageLinks NextPageLink"
+      template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
       class="paginator"
     />
   </div>
@@ -44,27 +44,45 @@ const props = defineProps({
     type: Array,
     required: true
   },
+  totalRecords: {
+    type: Number,
+    default: null
+  },
+  rows: {
+    type: Number,
+    default: 10
+  },
+  serverPagination: {
+    type: Boolean,
+    default: false
+  },
   loading: {
     type: Boolean,
     default: false
   }
 });
 
-const emit = defineEmits(['row-click']);
+const emit = defineEmits(['row-click', 'page-change']);
 
 const primeiroItem = ref(0);
-const itensPorPagina = 10;
 
 const paginaAtual = computed(() => {
-  const inicio = primeiroItem.value;
-  const fim = inicio + itensPorPagina;
-  return props.dados
+  const dadosProcessados = props.dados
     .map((item) => ({
       ...item,
       especialidadeDescricao: obterDescricaoEspecialidade(item.especialidade)
-    }))
-    .slice(inicio, fim);
+    }));
+
+  if (props.serverPagination) {
+    return dadosProcessados;
+  }
+
+  const inicio = primeiroItem.value;
+  const fim = inicio + props.rows;
+  return dadosProcessados.slice(inicio, fim);
 });
+
+const totalRegistros = computed(() => props.totalRecords ?? props.dados.length);
 
 const formatarCpf = (valor) => {
   const digitos = String(valor ?? '').replace(/\D/g, '').slice(0, 11);
@@ -90,6 +108,7 @@ const obterDescricaoEspecialidade = (especialidade) => {
 
 const atualizarPagina = (event) => {
   primeiroItem.value = event.first;
+  emit('page-change', event);
 };
 </script>
 
@@ -110,10 +129,11 @@ const atualizarPagina = (event) => {
 .paginator {
   display: flex;
   justify-content: center;
+  margin-bottom: 1rem;
   background: var(--app-surface);
   border: 1px solid var(--app-border);
   border-radius: 0.75rem;
-  padding: 1rem;
+  padding: 0.5rem 0.75rem;
 }
 
 :deep(.p-datatable .p-datatable-tbody > tr) {
@@ -127,5 +147,13 @@ const atualizarPagina = (event) => {
 :deep(.p-paginator) {
   background: transparent;
   border: none;
+}
+
+:deep(.p-paginator .p-paginator-pages .p-paginator-page),
+:deep(.p-paginator .p-paginator-prev),
+:deep(.p-paginator .p-paginator-next),
+:deep(.p-paginator .p-paginator-last) {
+  min-width: 2rem;
+  height: 2rem;
 }
 </style>

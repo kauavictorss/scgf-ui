@@ -72,19 +72,43 @@ const funcionariosFiltrados = computed(() => {
   });
 });
 
-onMounted(async () => {
+const carregarFuncionarios = async () => {
   carregandoLista.value = true;
   erroLista.value = '';
 
   try {
-    const response = await ApiService.listarFuncionariosAtivos();
-    funcionarios.value = response.data.content || response.data || [];
+    const primeiraResposta = await ApiService.listarFuncionariosAtivos({page: 0, size: 100});
+    const dadosIniciais = primeiraResposta.data?.content || primeiraResposta.data || [];
+
+    if (Array.isArray(primeiraResposta.data?.content)) {
+      const totalRegistrosResposta = primeiraResposta.data?.totalElements ?? dadosIniciais.length;
+      const tamanhoPagina = primeiraResposta.data?.size || primeiraResposta.data?.pageable?.pageSize || 100;
+      const totalPaginas = primeiraResposta.data?.totalPages ?? Math.ceil(totalRegistrosResposta / tamanhoPagina);
+      const listaCompleta = [...dadosIniciais];
+
+      for (let pagina = 1; pagina < totalPaginas; pagina += 1) {
+        const respostaPagina = await ApiService.listarFuncionariosAtivos({page: pagina, size: tamanhoPagina});
+        const dadosPagina = respostaPagina.data?.content || [];
+        if (Array.isArray(dadosPagina)) {
+          listaCompleta.push(...dadosPagina);
+        }
+      }
+
+      funcionarios.value = listaCompleta;
+      return;
+    }
+
+    funcionarios.value = Array.isArray(dadosIniciais) ? dadosIniciais : [];
   } catch (error) {
     erroLista.value = 'Não foi possível carregar os funcionários ativos.';
     console.error('Erro ao listar funcionários ativos:', error);
   } finally {
     carregandoLista.value = false;
   }
+};
+
+onMounted(async () => {
+  await carregarFuncionarios(0);
 });
 
 const abrirDetalhes = async (event) => {

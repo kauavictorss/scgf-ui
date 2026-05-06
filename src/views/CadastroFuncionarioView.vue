@@ -170,9 +170,28 @@ const carregarFuncionariosConsulta = async () => {
   carregandoConsultaLista.value = true;
 
   try {
-    const response = await ApiService.listarFuncionariosAtivos();
-    const dados = response.data?.content || response.data || [];
-    funcionariosAtivosConsulta.value = Array.isArray(dados) ? dados : [];
+    const primeiraResposta = await ApiService.listarFuncionariosAtivos({page: 0, size: 100});
+    const dadosIniciais = primeiraResposta.data?.content || primeiraResposta.data || [];
+
+    if (Array.isArray(primeiraResposta.data?.content)) {
+      const totalRegistros = primeiraResposta.data?.totalElements ?? dadosIniciais.length;
+      const tamanhoPagina = primeiraResposta.data?.size || primeiraResposta.data?.pageable?.pageSize || 100;
+      const totalPaginas = primeiraResposta.data?.totalPages ?? Math.ceil(totalRegistros / tamanhoPagina);
+      const funcionarios = [...dadosIniciais];
+
+      for (let pagina = 1; pagina < totalPaginas; pagina += 1) {
+        const respostaPagina = await ApiService.listarFuncionariosAtivos({page: pagina, size: tamanhoPagina});
+        const dadosPagina = respostaPagina.data?.content || [];
+        if (Array.isArray(dadosPagina)) {
+          funcionarios.push(...dadosPagina);
+        }
+      }
+
+      funcionariosAtivosConsulta.value = funcionarios;
+      return;
+    }
+
+    funcionariosAtivosConsulta.value = Array.isArray(dadosIniciais) ? dadosIniciais : [];
   } catch (errorApi) {
     funcionariosAtivosConsulta.value = [];
     toast.mostrar('Não foi possível carregar os funcionários ativos.', 'erro');

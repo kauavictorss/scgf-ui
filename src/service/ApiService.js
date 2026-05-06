@@ -14,11 +14,11 @@ const ApiService = {
     listarDetalhesFuncionario(cpf) {
         return api.get(`/funcionarios/listar/detalhes/${cpf}`);
     },
-    listarFuncionariosAtivos() {
-        return api.get('/funcionarios/listar/ativos');
+    listarFuncionariosAtivos(params = {}) {
+        return api.get('/funcionarios/listar/ativos', {params});
     },
-    listarFuncionariosInativos() {
-        return api.get('/funcionarios/listar/inativos');
+    listarFuncionariosInativos(params = {}) {
+        return api.get('/funcionarios/listar/inativos', {params});
     },
     listarEspecialidades() {
         return api.get('/funcionarios/listar/especialidades');
