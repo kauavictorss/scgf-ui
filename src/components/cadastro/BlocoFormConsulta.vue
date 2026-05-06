@@ -25,6 +25,9 @@
       <div class="campo">
         <label for="nome">Nome</label>
         <InputText id="nome" v-model="formulario.nome"
+                   @input="tratarNomeInput"
+                   @keydown="bloquearTeclaCampo('semNumeros', $event)"
+                   @paste="bloquearColagemCampo('semNumeros', $event)"
                    :disabled="!editando"
                    :invalid="obterValidacaoCampo('nome').invalido"
                    @blur="marcarCampoTocado('nome')"/>
@@ -119,8 +122,10 @@
       <div class="campo">
         <label for="uf">UF</label>
         <InputText id="uf" v-model="formulario.endereco.uf" maxlength="2"
+                   @input="tratarUfInput"
+                   @keydown="bloquearTeclaCampo('somenteLetras', $event)"
+                   @paste="bloquearColagemCampo('somenteLetras', $event)"
                    :disabled="!editando"
-                   @input="normalizarUf"
                    :invalid="obterValidacaoCampo('endereco.uf').invalido"
                    @blur="marcarCampoTocado('endereco.uf')"/>
         <small v-if="obterValidacaoCampo('endereco.uf').invalido" class="erro-label">
@@ -130,6 +135,9 @@
       <div class="campo">
         <label for="numero">Número</label>
         <InputText id="numero" v-model="formulario.endereco.numero"
+                   @input="tratarNumeroEnderecoInput"
+                   @keydown="bloquearTeclaCampo('somenteNumeros', $event)"
+                   @paste="bloquearColagemCampo('somenteNumeros', $event)"
                    :disabled="!editando"
                    @blur="marcarCampoTocado('endereco.numero')"/>
       </div>
@@ -382,6 +390,78 @@ const estadoCamposTocadosInicial = () => camposObrigatorios.reduce((acc, campo) 
 
 const normalizarCpf = (valor) => String(valor || '').replace(/\D/g, '');
 
+const bloquearTeclaCampo = (tipo, event) => {
+  const tecla = event?.key || '';
+  const teclasLiberadas = [
+    'Backspace',
+    'Tab',
+    'Enter',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Delete',
+    'Home',
+    'End',
+    'Escape'
+  ];
+
+  if (teclasLiberadas.includes(tecla) || event?.ctrlKey || event?.metaKey || event?.altKey) {
+    return;
+  }
+
+  if (tecla.length !== 1) {
+    return;
+  }
+
+  if (tipo === 'semNumeros' && /\d/.test(tecla)) {
+    event.preventDefault();
+  }
+
+  if (tipo === 'somenteNumeros' && /\D/.test(tecla)) {
+    event.preventDefault();
+  }
+
+  if (tipo === 'somenteLetras' && /\d/.test(tecla)) {
+    event.preventDefault();
+  }
+};
+
+const bloquearColagemCampo = (tipo, event) => {
+  const texto = event?.clipboardData?.getData('text') || '';
+
+  if (!texto) {
+    return;
+  }
+
+  if (tipo === 'semNumeros' && /\d/.test(texto)) {
+    event.preventDefault();
+  }
+
+  if (tipo === 'somenteNumeros' && /\D/.test(texto)) {
+    event.preventDefault();
+  }
+
+  if (tipo === 'somenteLetras' && /\d/.test(texto)) {
+    event.preventDefault();
+  }
+};
+
+const tratarNomeInput = (event) => {
+  formulario.value.nome = String(event?.target?.value || '').replace(/\d/g, '');
+};
+
+const tratarUfInput = (event) => {
+  formulario.value.endereco.uf = String(event?.target?.value || '')
+    .replace(/[^a-zA-Z]/g, '')
+    .toUpperCase()
+    .slice(0, 2);
+};
+
+const tratarNumeroEnderecoInput = (event) => {
+  formulario.value.endereco.numero = String(event?.target?.value || '').replace(/\D/g, '');
+};
+
 const estaCampoVazio = (campo) => {
   if (campo === 'endereco.cep') return !formulario.value.endereco.cep?.trim();
   if (campo === 'endereco.logradouro') return !formulario.value.endereco.logradouro?.trim();
@@ -484,10 +564,6 @@ const clonarFuncionario = (funcionario) => ({
     complemento: funcionario?.endereco?.complemento || ''
   }
 });
-
-const normalizarUf = () => {
-  formulario.value.endereco.uf = String(formulario.value.endereco.uf || '').replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 2);
-};
 
 const normalizarPayload = () => ({
   ...formulario.value,

@@ -14,8 +14,11 @@
     <div class="campo">
       <label for="nome">Nome</label>
       <InputText id="nome" v-model="formulario.nome"
-                 :invalid="obterValidacaoCampo('nome').invalido"
-                 @blur="marcarCampoTocado('nome')"/>
+                 @input="tratarNomeInput"
+                 @keydown="bloquearTeclaCampo('semNumeros', $event)"
+                 @paste="bloquearColagemCampo('semNumeros', $event)"
+                  :invalid="obterValidacaoCampo('nome').invalido"
+                  @blur="marcarCampoTocado('nome')"/>
       <small v-if="obterValidacaoCampo('nome').invalido" class="erro-label">
         {{ obterValidacaoCampo('nome').mensagem }}
       </small>
@@ -100,9 +103,12 @@
     </div>
     <div class="campo">
       <label for="uf">UF</label>
-      <InputText id="uf" v-model="formulario.endereco.uf" maxlength="2" @input="normalizarUf"
-                 :invalid="obterValidacaoCampo('endereco.uf').invalido"
-                 @blur="marcarCampoTocado('endereco.uf')"/>
+      <InputText id="uf" v-model="formulario.endereco.uf" maxlength="2"
+                 @input="tratarUfInput"
+                 @keydown="bloquearTeclaCampo('somenteLetras', $event)"
+                 @paste="bloquearColagemCampo('somenteLetras', $event)"
+                  :invalid="obterValidacaoCampo('endereco.uf').invalido"
+                  @blur="marcarCampoTocado('endereco.uf')"/>
       <small v-if="obterValidacaoCampo('endereco.uf').invalido" class="erro-label">
         {{ obterValidacaoCampo('endereco.uf').mensagem }}
       </small>
@@ -110,7 +116,10 @@
     <div class="campo">
       <label for="numero">Número</label>
       <InputText id="numero" v-model="formulario.endereco.numero"
-                 @blur="marcarCampoTocado('endereco.numero')"/>
+                 @input="tratarNumeroEnderecoInput"
+                 @keydown="bloquearTeclaCampo('somenteNumeros', $event)"
+                 @paste="bloquearColagemCampo('somenteNumeros', $event)"
+                  @blur="marcarCampoTocado('endereco.numero')"/>
     </div>
     <div class="campo">
       <label for="complemento">Complemento</label>
@@ -409,6 +418,78 @@ const numeroOuNulo = (valor) => {
   return Number.isNaN(numero) ? null : numero;
 };
 
+const bloquearTeclaCampo = (tipo, event) => {
+  const tecla = event?.key || '';
+  const teclasLiberadas = [
+    'Backspace',
+    'Tab',
+    'Enter',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Delete',
+    'Home',
+    'End',
+    'Escape'
+  ];
+
+  if (teclasLiberadas.includes(tecla) || event?.ctrlKey || event?.metaKey || event?.altKey) {
+    return;
+  }
+
+  if (tecla.length !== 1) {
+    return;
+  }
+
+  if (tipo === 'semNumeros' && /\d/.test(tecla)) {
+    event.preventDefault();
+  }
+
+  if (tipo === 'somenteNumeros' && /\D/.test(tecla)) {
+    event.preventDefault();
+  }
+
+  if (tipo === 'somenteLetras' && /\d/.test(tecla)) {
+    event.preventDefault();
+  }
+};
+
+const bloquearColagemCampo = (tipo, event) => {
+  const texto = event?.clipboardData?.getData('text') || '';
+
+  if (!texto) {
+    return;
+  }
+
+  if (tipo === 'semNumeros' && /\d/.test(texto)) {
+    event.preventDefault();
+  }
+
+  if (tipo === 'somenteNumeros' && /\D/.test(texto)) {
+    event.preventDefault();
+  }
+
+  if (tipo === 'somenteLetras' && /\d/.test(texto)) {
+    event.preventDefault();
+  }
+};
+
+const tratarNomeInput = (event) => {
+  formulario.value.nome = String(event?.target?.value || '').replace(/\d/g, '');
+};
+
+const tratarUfInput = (event) => {
+  formulario.value.endereco.uf = String(event?.target?.value || '')
+    .replace(/[^a-zA-Z]/g, '')
+    .toUpperCase()
+    .slice(0, 2);
+};
+
+const tratarNumeroEnderecoInput = (event) => {
+  formulario.value.endereco.numero = String(event?.target?.value || '').replace(/\D/g, '');
+};
+
 const montarPayload = () => ({
   ...formulario.value,
   cpf: String(formulario.value.cpf || '').replace(/\D/g, ''),
@@ -426,10 +507,6 @@ const montarPayload = () => ({
 
 const confirmarCadastro = () => {
   emit('confirmar', montarPayload());
-};
-
-const normalizarUf = () => {
-  formulario.value.endereco.uf = String(formulario.value.endereco.uf || '').replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 2);
 };
 
 watch(

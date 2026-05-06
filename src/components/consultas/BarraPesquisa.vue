@@ -4,7 +4,9 @@
         :model-value="modelValue"
         :placeholder="placeholder"
         class="campo-busca"
-        @input="atualizarValor"
+        @update:modelValue="atualizarValor"
+        @keydown="bloquearTecla"
+        @paste="bloquearColagem"
         @keyup.enter="$emit('buscar')"
     />
     <Button v-if="mostrarBotao" :label="buttonLabel" icon="pi pi-search" @click="$emit('buscar')"/>
@@ -63,6 +65,55 @@ const atualizarValor = (valor) => {
   }
 
   emit('update:modelValue', texto);
+};
+
+const bloquearTecla = (event) => {
+  const tecla = event?.key || '';
+  const teclaValida = [
+    'Backspace',
+    'Tab',
+    'Enter',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Delete',
+    'Home',
+    'End',
+    'Escape'
+  ];
+
+  if (teclaValida.includes(tecla) || event?.ctrlKey || event?.metaKey || event?.altKey) {
+    return;
+  }
+
+  if (tecla.length !== 1) {
+    return;
+  }
+
+  if (props.somenteNumeros && /\D/.test(tecla)) {
+    event.preventDefault();
+  }
+
+  if (props.bloquearNumeros && /\d/.test(tecla)) {
+    event.preventDefault();
+  }
+};
+
+const bloquearColagem = (event) => {
+  const texto = event?.clipboardData?.getData('text') || '';
+
+  if (!texto) {
+    return;
+  }
+
+  if (props.somenteNumeros && /\D/.test(texto)) {
+    event.preventDefault();
+  }
+
+  if (props.bloquearNumeros && /\d/.test(texto)) {
+    event.preventDefault();
+  }
 };
 </script>
 
