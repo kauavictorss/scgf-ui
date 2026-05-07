@@ -100,8 +100,8 @@ const items = ref([
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  padding-right: 1rem;
-  margin-right: 1.25rem;
+  padding-right: 0.75rem;
+  margin-right: 1rem;
   border-right: 1px solid var(--app-border);
   user-select: none;
 }

@@ -6,7 +6,7 @@
     --app-surface: #ffffff;
     --app-surface-alt: #eef2f6;
     --app-text: #212529;
-    --app-muted: #6c757d;
+    --app-muted: #636a72;
     --app-border: #c2c9d1;
     --app-primary: #0d6efd;
     --app-danger: #b91c1c;
@@ -39,7 +39,7 @@ body {
 
 #app {
     width: 100%;
-    max-width: 1280px;
+    max-width: 1150px;
     margin: 0 auto;
     padding: 1.25rem 2rem 0;
     display: block !important;

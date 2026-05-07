@@ -3,7 +3,7 @@
       v-model:visible="visibilidade"
       modal
       header="Consultar funcionário"
-      :style="{ width: '95vw', maxWidth: '1200px' }"
+      :style="{ width: '90vw', maxWidth: '900px', maxHeight: '85vh' }"
       @hide="fecharModal"
   >
     <div class="filtros-consulta">
