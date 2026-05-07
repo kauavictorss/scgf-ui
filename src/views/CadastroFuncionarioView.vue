@@ -36,6 +36,17 @@
       @cancelar="cancelarConsulta"
       @selecionar-pesquisa="selecionarFuncionarioConsulta"
   />
+
+  <ModalConfirmacaoAcao
+      v-model:visible="modalConfirmacaoVisivel"
+      :title="confirmacaoTitulo"
+      :message="confirmacaoMensagem"
+      :confirm-label="confirmacaoLabel"
+      :confirm-severity="confirmacaoSeverity"
+      :loading="confirmacaoCarregando"
+      @confirm="executarAcaoConfirmada"
+      @cancel="cancelarAcaoConfirmada"
+  />
 </template>
 
 <script setup>
@@ -45,6 +56,7 @@ import ApiService from '@/service/ApiService.js';
 import {extrairMensagemAmigavel, extrairMensagemPorCampo} from '@/utils/msgErros.js';
 import BlocoFormCadastro from '@/components/cadastro/BlocoFormCadastro.vue';
 import BlocoFormConsulta from '@/components/cadastro/BlocoFormConsulta.vue';
+import ModalConfirmacaoAcao from '@/components/cadastro/ModalConfirmacaoAcao.vue';
 
 const modoTela = ref('');
 const carregando = ref(false);
@@ -58,6 +70,13 @@ const mensagemConsultaErro = ref('');
 const carregandoConsultaLista = ref(false);
 const carregandoConsulta = ref(false);
 const funcionariosAtivosConsulta = ref([]);
+const modalConfirmacaoVisivel = ref(false);
+const confirmacaoTitulo = ref('Confirmar ação');
+const confirmacaoMensagem = ref('');
+const confirmacaoLabel = ref('Confirmar');
+const confirmacaoSeverity = ref('primary');
+const confirmacaoCarregando = ref(false);
+const acaoConfirmacao = ref(null);
 const toast = inject('toast');
 
 const normalizarCpf = (cpf) => String(cpf || '').replace(/\D/g, '');
@@ -68,6 +87,37 @@ const limparMensagens = () => {
 
 const limparMensagensConsulta = () => {
   camposComErroConsulta.value = [];
+};
+
+const abrirConfirmacao = ({titulo, mensagem, label, severity, acao}) => {
+  confirmacaoTitulo.value = titulo;
+  confirmacaoMensagem.value = mensagem;
+  confirmacaoLabel.value = label;
+  confirmacaoSeverity.value = severity;
+  acaoConfirmacao.value = acao;
+  modalConfirmacaoVisivel.value = true;
+};
+
+const cancelarAcaoConfirmada = () => {
+  modalConfirmacaoVisivel.value = false;
+  acaoConfirmacao.value = null;
+  confirmacaoCarregando.value = false;
+};
+
+const executarAcaoConfirmada = async () => {
+  if (!acaoConfirmacao.value) {
+    return;
+  }
+
+  confirmacaoCarregando.value = true;
+  modalConfirmacaoVisivel.value = false;
+
+  try {
+    await acaoConfirmacao.value();
+  } finally {
+    confirmacaoCarregando.value = false;
+    acaoConfirmacao.value = null;
+  }
 };
 
 const extrairErros = (errorApi) => {
@@ -117,7 +167,7 @@ const extrairErros = (errorApi) => {
   };
 };
 
-const confirmarCadastro = async (payload) => {
+const executarCadastro = async (payload) => {
   limparMensagens();
   carregando.value = true;
 
@@ -153,6 +203,16 @@ const confirmarCadastro = async (payload) => {
   } finally {
     carregando.value = false;
   }
+};
+
+const confirmarCadastro = (payload) => {
+  abrirConfirmacao({
+    titulo: 'Confirmar cadastro',
+    mensagem: 'Deseja cadastrar este funcionário?',
+    label: 'Cadastrar',
+    severity: 'success',
+    acao: () => executarCadastro(payload)
+  });
 };
 
 const cancelarCadastro = () => {
@@ -229,7 +289,7 @@ const selecionarFuncionarioConsulta = async (event) => {
   }
 };
 
-const salvarFuncionarioConsulta = async (payload) => {
+const executarSalvarFuncionarioConsulta = async (payload) => {
   limparMensagensConsulta();
   carregandoConsulta.value = true;
 
@@ -261,7 +321,17 @@ const salvarFuncionarioConsulta = async (payload) => {
   }
 };
 
-const excluirFuncionarioConsulta = async (cpf) => {
+const salvarFuncionarioConsulta = (payload) => {
+  abrirConfirmacao({
+    titulo: 'Confirmar edição',
+    mensagem: 'Deseja editar este funcionário?',
+    label: 'Editar',
+    severity: 'success',
+    acao: () => executarSalvarFuncionarioConsulta(payload)
+  });
+};
+
+const executarExcluirFuncionarioConsulta = async (cpf) => {
   const cpfNormalizado = normalizarCpf(cpf);
   if (!cpfNormalizado) {
     toast.mostrar('Funcionário inválido para exclusão.', 'erro');
@@ -287,6 +357,16 @@ const excluirFuncionarioConsulta = async (cpf) => {
   } finally {
     carregandoConsulta.value = false;
   }
+};
+
+const excluirFuncionarioConsulta = (cpf) => {
+  abrirConfirmacao({
+    titulo: 'Confirmar exclusão',
+    mensagem: 'Deseja excluir este funcionário? Esta ação não poderá ser desfeita.',
+    label: 'Excluir',
+    severity: 'danger',
+    acao: () => executarExcluirFuncionarioConsulta(cpf)
+  });
 };
 
 const cancelarConsulta = () => {

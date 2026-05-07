@@ -71,6 +71,37 @@ a,
     border-color: color-mix(in srgb, var(--app-primary) 28%, var(--app-border));
 }
 
+[data-theme='light'] .p-select:not(.p-disabled):hover {
+    border-color: color-mix(in srgb, var(--app-primary) 40%, var(--app-border));
+}
+
+[data-theme='light'] .p-select:not(.p-disabled):hover .p-select-label {
+    background-color: color-mix(in srgb, var(--app-primary) 12%, var(--app-surface));
+}
+
+[data-theme='light'] .p-select-option:hover,
+[data-theme='light'] .p-select-option.p-focus {
+    background-color: color-mix(in srgb, var(--app-primary) 16%, var(--app-surface));
+    color: var(--app-text);
+}
+
+[data-theme='light'] .p-inputtext:not(.p-disabled):hover {
+    border-color: color-mix(in srgb, var(--app-primary) 35%, var(--app-border));
+}
+
+[data-theme='light'] .p-inputmask:not(.p-disabled):hover {
+    border-color: color-mix(in srgb, var(--app-primary) 35%, var(--app-border));
+}
+
+[data-theme='light'] .p-inputnumber:not(.p-disabled):hover {
+    border-color: color-mix(in srgb, var(--app-primary) 35%, var(--app-border));
+}
+
+[data-theme='light'] .p-button:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
+}
+
 .p-menubar,
 .p-dialog,
 .p-inputtext,
