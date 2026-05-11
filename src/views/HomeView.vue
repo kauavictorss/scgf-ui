@@ -10,7 +10,7 @@
     />
     <div class="home-view__texto">
       <p class="home-view__subtitulo">Sistema de Consultas e Gerenciamento de Funcionários</p>
-      <p class="home-view__versao">Versão 1.0.2</p>
+      <p class="home-view__versao">Versão 1.1.0</p>
     </div>
   </div>
 </template>
