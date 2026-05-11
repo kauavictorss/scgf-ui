@@ -1,10 +1,10 @@
-# 🚀 SCGF - Sistema de Consultas e Gerenciamento de Funcionários (UI)
+# 💻 SCGF UI - Interface Web
 
 ![Vue.js](https://img.shields.io/badge/Vue.js-3.x-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-Latest-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.14-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![PrimeVue](https://img.shields.io/badge/PrimeVue-4.x-49b048?style=for-the-badge&logo=primevue&logoColor=white)
+
+---
 
 O **SCGF (Sistema de Consultas e Gerenciamento de Funcionários)** é a interface web moderna e intuitiva do ecossistema SCGF. Desenvolvido para proporcionar uma gestão eficiente de recursos humanos, este projeto permite o controle completo do ciclo de vida dos colaboradores, integrando-se nativamente com a **[SCGF-API](https://github.com/kauavictorss/scgf-api)**.
 
@@ -15,17 +15,11 @@ O **SCGF (Sistema de Consultas e Gerenciamento de Funcionários)** é a interfac
 ### **Frontend (UI Experience)**
 * **Framework:** Vue 3 (Composition API)
 * **Build Tool:** Vite
-* **UI Components:** PrimeVue 4 & BootstrapVueNext
+* **UI Components:** PrimeVue 4
 * **Design System:** Aura Theme
 * **Icons:** PrimeIcons
 * **HTTP Client:** Axios
 * **Routing:** Vue Router
-
-### **Backend (Core API)**
-* **Language:** Java 21 (LTS)
-* **Framework:** Spring Boot 3.5.14
-* **Database:** MySQL 8.0
-* **Migrations:** Flyway DB
 
 ---
 
@@ -64,7 +58,7 @@ src/
 
 ---
 
-## ⚙️ Instalação e Configuração
+## 🚀 Como Executar o Frontend
 
 ### **Pré-requisitos**
 * Node.js (v18 ou superior)
@@ -100,11 +94,11 @@ src/
    ```
 
 6. **Acesse no navegador:**
-   `http://localhost:3000` para acessar a interface web.
+   `http://localhost:5173`
 
 ---
 
-## 📝 Licença
+## 📄 Licença
 
 Este projeto está sob a licença [MIT](LICENSE).
 
