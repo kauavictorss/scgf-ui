@@ -32,7 +32,7 @@ import ThemeToggle from '@/components/layout/ThemeToggle.vue';
 const router = useRouter();
 
 const logout = () => {
-  router.push('/home');
+  router.push('/login');
 };
 
 const items = ref([

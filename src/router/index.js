@@ -5,8 +5,19 @@ import CadastroFuncionarioView from "@/views/CadastroFuncionarioView.vue";
 import HomeView from "@/views/HomeView.vue";
 import ConsEspecialidadesView from "@/views/ConsEspecialidadesView.vue";
 import SobreView from "@/views/SobreView.vue";
+import LoginView from "@/views/LoginView.vue";
 
 const routes = [
+  {
+    path: '/',
+    redirect: '/login'
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginView,
+    meta: { title: 'SCGF – Login', hideNavigation: true }
+  },
   {
     path: '/home',
     name: 'Home',

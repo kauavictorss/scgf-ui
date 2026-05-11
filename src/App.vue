@@ -1,16 +1,18 @@
 <template>
   <div class="app-shell">
     <MensagensToast ref="toastRef"/>
-    <MenuNavegacao/>
+    <MenuNavegacao v-if="!route.meta.hideNavigation"/>
     <router-view/>
   </div>
 </template>
 
 <script setup>
 import {ref, provide} from 'vue';
+import { useRoute } from 'vue-router';
 import MenuNavegacao from './components/layout/MenuNavegacao.vue';
 import MensagensToast from './components/layout/MensagensToast.vue';
 
+const route = useRoute();
 const toastRef = ref(null);
 
 const toastService = {

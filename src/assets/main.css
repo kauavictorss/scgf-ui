@@ -61,98 +61,35 @@ a,
     }
 }
 
-[data-theme='light'] a:hover {
-    background-color: color-mix(in srgb, var(--app-primary) 22%, var(--app-surface));
-    border-radius: 0.35rem;
-}
-
-[data-theme='light'] .contato-item:hover {
-    background-color: color-mix(in srgb, var(--app-primary) 10%, var(--app-surface));
-    border-color: color-mix(in srgb, var(--app-primary) 28%, var(--app-border));
-}
-
+/* Hover effects para inputs do PrimeVue (Modo Light) */
 [data-theme='light'] .p-select:not(.p-disabled):hover {
     border-color: color-mix(in srgb, var(--app-primary) 40%, var(--app-border));
 }
 
-[data-theme='light'] .p-select:not(.p-disabled):hover .p-select-label {
-    background-color: color-mix(in srgb, var(--app-primary) 12%, var(--app-surface));
-}
-
-[data-theme='light'] .p-select-option:hover,
-[data-theme='light'] .p-select-option.p-focus {
-    background-color: color-mix(in srgb, var(--app-primary) 16%, var(--app-surface));
-    color: var(--app-text);
-}
-
-[data-theme='light'] .p-inputtext:not(.p-disabled):hover {
-    border-color: color-mix(in srgb, var(--app-primary) 35%, var(--app-border));
-}
-
-[data-theme='light'] .p-inputmask:not(.p-disabled):hover {
-    border-color: color-mix(in srgb, var(--app-primary) 35%, var(--app-border));
-}
-
+[data-theme='light'] .p-inputtext:not(.p-disabled):hover,
+[data-theme='light'] .p-inputmask:not(.p-disabled):hover,
 [data-theme='light'] .p-inputnumber:not(.p-disabled):hover {
     border-color: color-mix(in srgb, var(--app-primary) 35%, var(--app-border));
 }
 
-[data-theme='light'] .p-button:not(:disabled):hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
+/* Ajustes de acessibilidade: garante que spans de foco do PrimeVue fiquem invisíveis */
+.p-hidden-accessible {
+    border: 0 !important;
+    clip: rect(0 0 0 0) !important;
+    height: 1px !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    position: absolute !important;
+    width: 1px !important;
+    white-space: nowrap !important;
 }
 
-.p-menubar,
-.p-dialog,
-.p-inputtext,
-.p-datatable-table {
-    background: var(--app-surface);
-    color: var(--app-text);
-}
-
-.p-menubar,
-.p-dialog,
-.p-inputtext,
-.p-datatable .p-datatable-header,
-.p-datatable .p-datatable-thead > tr > th,
-.p-datatable .p-datatable-tbody > tr > td {
-    border-color: var(--app-border);
-}
-
-.p-datatable .p-datatable-thead > tr > th {
-    background: var(--app-surface-alt);
-    color: var(--app-text);
-}
-
-.p-datatable .p-datatable-tbody > tr:hover {
-    background: color-mix(in srgb, var(--app-surface-alt) 70%, var(--app-surface));
-}
-
-.p-dialog .p-dialog-header,
-.p-dialog .p-dialog-content {
-    background: var(--app-surface);
-    color: var(--app-text);
-}
-
-.p-button.p-button-text {
-    color: var(--app-text);
-}
-
-[data-theme='light'] .p-menubar,
-[data-theme='light'] .p-datatable .p-datatable-thead > tr > th,
-[data-theme='light'] .p-dialog .p-dialog-header,
-[data-theme='light'] .p-dialog .p-dialog-content {
-    background: var(--app-surface);
-    color: var(--app-text);
-}
-
-[data-theme='dark'] .p-menubar,
-[data-theme='dark'] .p-datatable .p-datatable-thead > tr > th,
-[data-theme='dark'] .p-dialog .p-dialog-header,
-[data-theme='dark'] .p-dialog .p-dialog-content {
-    background: var(--app-surface);
-    color: var(--app-text);
-}
+/* 
+   IMPORTANTE: Removidas as regras que forçavam background em .p-dialog e .p-menubar.
+   O PrimeVue 4 com tema Aura já gerencia isso automaticamente usando o darkModeSelector: '[data-theme="dark"]'
+   que configuramos no main.js.
+*/
 
 @media (max-width: 768px) {
     #app {
