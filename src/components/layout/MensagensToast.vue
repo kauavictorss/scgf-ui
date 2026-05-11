@@ -49,9 +49,19 @@ defineExpose({
   z-index: 2000;
 }
 
-:global(.toast-messages .p-toast-message) {
-  margin-bottom: 0.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+:global(.toast-messages .p-toast-message-content) {
+  display: flex;
+  align-items: flex-start; /* Alinha o ícone com o topo do texto */
+  gap: 0.5rem;
+}
+
+:global(.toast-messages .p-toast-message-icon) {
+  margin-top: 0.25rem; /* Ajuste fino para alinhar o ícone com a primeira linha do título */
+}
+
+:global(.toast-messages .p-toast-message-text) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 </style>

@@ -8,8 +8,16 @@
       :style="{ width: '25rem' }"
       appendTo="body"
   >
-    <!-- O componente Form gerencia o estado e a validação automaticamente -->
-    <Form v-slot="$form" :resolver="resolver" :initialValues="initialValues" @submit="onFormSubmit" class="login-form">
+    <!-- validateOnValueUpdate: false impede que o erro apareça enquanto o usuário digita pela primeira vez -->
+    <Form
+        v-slot="$form"
+        :resolver="resolver"
+        :initialValues="initialValues"
+        :validateOnValueUpdate="false"
+        :validateOnBlur="true"
+        @submit="onFormSubmit"
+        class="login-form"
+    >
       <div class="campo">
         <label for="usuario">Usuário</label>
         <InputText name="usuario" type="text" placeholder="Digite seu usuário" autofocus/>
@@ -34,7 +42,7 @@
 </template>
 
 <script setup>
-import {ref, reactive} from 'vue';
+import {ref, reactive, inject} from 'vue';
 import {useRouter} from 'vue-router';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
@@ -44,6 +52,7 @@ import Message from 'primevue/message';
 import {Form} from '@primevue/forms';
 
 const router = useRouter();
+const toast = inject('toast');
 const visible = ref(true);
 const loading = ref(false);
 
@@ -71,6 +80,7 @@ const resolver = ({values}) => {
 
 const onFormSubmit = ({valid}) => {
   if (!valid) {
+    toast.mostrar('Falha no login! Tente novamente.', 'erro');
     return;
   }
 
@@ -79,6 +89,7 @@ const onFormSubmit = ({valid}) => {
   // Simulação de delay de rede
   setTimeout(() => {
     loading.value = false;
+    toast.mostrar('Login realizado com sucesso!', 'sucesso');
     router.push('/home');
   }, 800);
 };
