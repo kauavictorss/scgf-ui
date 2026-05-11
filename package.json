@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@primeuix/themes": "^1.1.2",
+    "@primevue/forms": "^4.5.5",
     "@vitejs/plugin-vue": "^6.0.0",
     "axios": "1.15.0",
     "primeicons": "^7.0.0",
