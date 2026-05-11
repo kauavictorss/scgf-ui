@@ -15,7 +15,7 @@ O **SCGF (Sistema de Consultas e Gerenciamento de Funcionários)** é a interfac
 ### **Frontend (UI Experience)**
 * **Framework:** Vue 3 (Composition API)
 * **Build Tool:** Vite
-* **UI Components:** PrimeVue 4
+* **UI Components:** PrimeVue 4 & PrimeVue Forms
 * **Design System:** Aura Theme
 * **Icons:** PrimeIcons
 * **HTTP Client:** Axios
@@ -28,6 +28,7 @@ O **SCGF (Sistema de Consultas e Gerenciamento de Funcionários)** é a interfac
 ### **✅ Já Implementado**
 * **📦 Gestão de Funcionários:** CRUD completo com fluxos guiados em abas.
 * **🔍 Consultas Avançadas:** Listagens paginadas de ativos e inativos com filtros dinâmicos.
+* **🔐 Autenticação:** Sistema de login com interface modal, redirecionamento de rotas e validação avançada via **PrimeVue Forms**.
 * **🏷️ Especialidades:** Consulta e filtragem por áreas de atuação.
 * **🌓 Dark Mode:** Suporte a temas claro e escuro com persistência local.
 * **📱 Responsividade:** Interface adaptada para diferentes dispositivos.
@@ -36,7 +37,6 @@ O **SCGF (Sistema de Consultas e Gerenciamento de Funcionários)** é a interfac
 ### **🚀 Roadmap (Em breve)**
 * **📊 Dashboards:** Gráficos de distribuição por especialidade e faixa salarial.
 * **📄 Relatórios:** Exportação de dados em PDF e Excel.
-* **🔐 Autenticação:** Sistema de login e controle de permissões por perfil.
 
 ---
 
@@ -94,7 +94,7 @@ src/
    ```
 
 6. **Acesse no navegador:**
-   `http://localhost:5173`
+   `http://localhost:3000`
 
 ---
 
@@ -114,3 +114,4 @@ Este projeto está sob a licença [MIT](LICENSE).
 [![GitHub](https://img.shields.io/badge/-GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/kauavictorss)
 [![LinkedIn](https://img.shields.io/badge/-LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kaua-victor-santos/)
 </div>
+
