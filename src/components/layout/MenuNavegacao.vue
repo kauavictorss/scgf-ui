@@ -15,23 +15,42 @@
               label="Sair"
               text
               severity="secondary"
-              @click="logout"
+              @click="abrirConfirmacaoLogout"
           />
         </div>
       </template>
     </Menubar>
+
+    <ModalConfirmacaoAcao
+        v-model:visible="confirmarLogoutVisivel"
+        title="Encerrar sessão"
+        message="Deseja realmente sair do sistema?"
+        confirm-label="Sair"
+        confirm-severity="danger"
+        @confirm="executarLogout"
+        @cancel="confirmarLogoutVisivel = false"
+    />
   </div>
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {ref, inject} from "vue";
 import {useRouter} from 'vue-router';
 import Button from 'primevue/button';
 import ThemeToggle from '@/components/layout/ThemeToggle.vue';
+import ModalConfirmacaoAcao from '@/components/cadastro/ModalConfirmacaoAcao.vue';
 
 const router = useRouter();
+const toast = inject('toast');
+const confirmarLogoutVisivel = ref(false);
 
-const logout = () => {
+const abrirConfirmacaoLogout = () => {
+  confirmarLogoutVisivel.value = true;
+};
+
+const executarLogout = () => {
+  confirmarLogoutVisivel.value = false;
+  toast?.mostrar('Sessão encerrada com sucesso.', 'info');
   router.push('/login');
 };
 
