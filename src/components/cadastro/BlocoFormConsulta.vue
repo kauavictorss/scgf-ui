@@ -8,232 +8,229 @@
   />
 
   <div v-if="funcionarioLocal" class="consulta-conteudo">
-    <h2>Detalhes do funcionário</h2>
-    <TabMenu v-model:activeIndex="abaAtiva" :model="abasCadastro" class="abas-cadastro"/>
+    <Form
+        v-slot="$form"
+        :resolver="resolver"
+        :initialValues="formulario"
+        :validateOnValueUpdate="false"
+        :validateOnBlur="true"
+        @submit="onFormSubmit"
+    >
+      <h2>Detalhes do funcionário</h2>
+      <TabMenu v-model:activeIndex="abaAtiva" :model="abasCadastro" class="abas-cadastro"/>
 
-    <div v-if="abaAtiva === 0" class="grid-campos">
-      <div class="campo">
-        <label for="cpf">CPF</label>
-        <InputMask id="cpf" v-model="formulario.cpf" mask="999.999.999-99"
-                   :disabled="!editando"
-                   :invalid="obterValidacaoCampo('cpf').invalido"
-                   @blur="marcarCampoTocado('cpf')"/>
-        <small v-if="obterValidacaoCampo('cpf').invalido" class="erro-label">
-          {{ obterValidacaoCampo('cpf').mensagem }}
-        </small>
+      <div v-if="abaAtiva === 0" class="grid-campos">
+        <div class="campo">
+          <label for="cpf">CPF</label>
+          <InputMask id="cpf" name="cpf" v-model="formulario.cpf" mask="999.999.999-99"
+                     :disabled="!editando"
+                     :invalid="campoInvalido($form, 'cpf')"/>
+          <Message v-if="campoInvalido($form, 'cpf')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'cpf') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="nome">Nome</label>
+          <InputText id="nome" name="nome" v-model="formulario.nome"
+                     @input="tratarNomeInput"
+                     @keydown="bloquearTeclaCampo('semNumeros', $event)"
+                     @paste="bloquearColagemCampo('semNumeros', $event)"
+                     :disabled="!editando"
+                     :invalid="campoInvalido($form, 'nome')"/>
+          <Message v-if="campoInvalido($form, 'nome')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'nome') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="idade">Idade</label>
+          <InputNumber
+              id="idade" name="idade"
+              v-model="formulario.idade"
+              :useGrouping="false"
+              :disabled="!editando"
+              :invalid="campoInvalido($form, 'idade')"
+          />
+          <Message v-if="campoInvalido($form, 'idade')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'idade') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="email">Email</label>
+          <InputText id="email" name="email" v-model="formulario.email"
+                     :disabled="!editando"
+                     :invalid="campoInvalido($form, 'email')"/>
+          <Message v-if="campoInvalido($form, 'email')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'email') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="especialidade">Especialidade</label>
+          <Select
+              inputId="especialidade"
+              name="especialidade"
+              v-model="formulario.especialidade"
+              :options="especialidadesComSelecione"
+              optionLabel="label"
+              optionValue="value"
+              filter
+              emptyFilterMessage="Nenhum resultado encontrado"
+              placeholder="Selecione"
+              :disabled="!editando"
+              :invalid="campoInvalido($form, 'especialidade')"
+          />
+          <Message v-if="campoInvalido($form, 'especialidade')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'especialidade') }}
+          </Message>
+        </div>
       </div>
-      <div class="campo">
-        <label for="nome">Nome</label>
-        <InputText id="nome" v-model="formulario.nome"
-                   @input="tratarNomeInput"
-                   @keydown="bloquearTeclaCampo('semNumeros', $event)"
-                   @paste="bloquearColagemCampo('semNumeros', $event)"
-                   :disabled="!editando"
-                   :invalid="obterValidacaoCampo('nome').invalido"
-                   @blur="marcarCampoTocado('nome')"/>
-        <small v-if="obterValidacaoCampo('nome').invalido" class="erro-label">
-          {{ obterValidacaoCampo('nome').mensagem }}
-        </small>
-      </div>
-      <div class="campo">
-        <label for="idade">Idade</label>
-        <InputNumber
-            id="idade"
-            v-model="formulario.idade"
-            :useGrouping="false"
-            :disabled="!editando"
-            :invalid="obterValidacaoCampo('idade').invalido"
-            @blur="marcarCampoTocado('idade')"
-        />
-        <small v-if="obterValidacaoCampo('idade').invalido" class="erro-label">
-          {{ obterValidacaoCampo('idade').mensagem }}
-        </small>
-      </div>
-      <div class="campo">
-        <label for="email">Email</label>
-        <InputText id="email" v-model="formulario.email"
-                   :disabled="!editando"
-                   :invalid="obterValidacaoCampo('email').invalido"
-                   @blur="marcarCampoTocado('email')"/>
-        <small v-if="obterValidacaoCampo('email').invalido" class="erro-label">
-          {{ obterValidacaoCampo('email').mensagem }}
-        </small>
-      </div>
-      <div class="campo">
-        <label for="especialidade">Especialidade</label>
-        <Select
-            inputId="especialidade"
-            v-model="formulario.especialidade"
-            :options="especialidadesComSelecione"
-            optionLabel="label"
-            optionValue="value"
-            filter
-            emptyFilterMessage="Nenhum resultado encontrado"
-            placeholder="Selecione"
-            :invalid="obterValidacaoCampo('especialidade').invalido"
-            @blur="marcarCampoTocado('especialidade')"
-        />
-        <small v-if="obterValidacaoCampo('especialidade').invalido" class="erro-label">
-          {{ obterValidacaoCampo('especialidade').mensagem }}
-        </small>
-      </div>
-    </div>
 
-    <div v-if="abaAtiva === 1" class="grid-campos">
-      <div class="campo">
-        <label for="cep">CEP</label>
-        <InputMask id="cep" v-model="formulario.endereco.cep" mask="99999-999"
-                   :disabled="!editando"
-                   :invalid="obterValidacaoCampo('endereco.cep').invalido"
-                   @blur="marcarCampoTocado('endereco.cep')"/>
-        <small v-if="obterValidacaoCampo('endereco.cep').invalido" class="erro-label">
-          {{ obterValidacaoCampo('endereco.cep').mensagem }}
-        </small>
+      <div v-if="abaAtiva === 1" class="grid-campos">
+        <div class="campo">
+          <label for="cep">CEP</label>
+          <InputMask id="cep" name="endereco.cep" v-model="formulario.endereco.cep" mask="99999-999"
+                     :disabled="!editando"
+                     :invalid="campoInvalido($form, 'endereco.cep')"/>
+          <Message v-if="campoInvalido($form, 'endereco.cep')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'endereco.cep') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="logradouro">Logradouro</label>
+          <InputText id="logradouro" name="endereco.logradouro" v-model="formulario.endereco.logradouro"
+                     :disabled="!editando"
+                     :invalid="campoInvalido($form, 'endereco.logradouro')"/>
+          <Message v-if="campoInvalido($form, 'endereco.logradouro')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'endereco.logradouro') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="bairro">Bairro</label>
+          <InputText id="bairro" name="endereco.bairro" v-model="formulario.endereco.bairro"
+                     :disabled="!editando"
+                     :invalid="campoInvalido($form, 'endereco.bairro')"/>
+          <Message v-if="campoInvalido($form, 'endereco.bairro')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'endereco.bairro') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="cidade">Cidade</label>
+          <InputText id="cidade" name="endereco.cidade" v-model="formulario.endereco.cidade"
+                     :disabled="!editando"
+                     :invalid="campoInvalido($form, 'endereco.cidade')"/>
+          <Message v-if="campoInvalido($form, 'endereco.cidade')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'endereco.cidade') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="uf">UF</label>
+          <Select
+              inputId="uf"
+              name="endereco.uf"
+              v-model="formulario.endereco.uf"
+              :options="ufsComSelecione"
+              optionLabel="label"
+              optionValue="value"
+              filter
+              emptyFilterMessage="Nenhum resultado encontrado"
+              placeholder="Selecione"
+              :disabled="!editando"
+              :invalid="campoInvalido($form, 'endereco.uf')"
+          />
+          <Message v-if="campoInvalido($form, 'endereco.uf')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'endereco.uf') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="numero">Número</label>
+          <InputText id="numero" name="endereco.numero" v-model="formulario.endereco.numero"
+                     @input="tratarNumeroEnderecoInput"
+                     @keydown="bloquearTeclaCampo('somenteNumeros', $event)"
+                     @paste="bloquearColagemCampo('somenteNumeros', $event)"
+                     :disabled="!editando"/>
+        </div>
+        <div class="campo">
+          <label for="complemento">Complemento</label>
+          <InputText id="complemento" name="endereco.complemento" v-model="formulario.endereco.complemento"
+                     :disabled="!editando"/>
+        </div>
       </div>
-      <div class="campo">
-        <label for="logradouro">Logradouro</label>
-        <InputText id="logradouro" v-model="formulario.endereco.logradouro"
-                   :disabled="!editando"
-                   :invalid="obterValidacaoCampo('endereco.logradouro').invalido"
-                   @blur="marcarCampoTocado('endereco.logradouro')"/>
-        <small v-if="obterValidacaoCampo('endereco.logradouro').invalido" class="erro-label">
-          {{ obterValidacaoCampo('endereco.logradouro').mensagem }}
-        </small>
-      </div>
-      <div class="campo">
-        <label for="bairro">Bairro</label>
-        <InputText id="bairro" v-model="formulario.endereco.bairro"
-                   :disabled="!editando"
-                   :invalid="obterValidacaoCampo('endereco.bairro').invalido"
-                   @blur="marcarCampoTocado('endereco.bairro')"/>
-        <small v-if="obterValidacaoCampo('endereco.bairro').invalido" class="erro-label">
-          {{ obterValidacaoCampo('endereco.bairro').mensagem }}
-        </small>
-      </div>
-      <div class="campo">
-        <label for="cidade">Cidade</label>
-        <InputText id="cidade" v-model="formulario.endereco.cidade"
-                   :disabled="!editando"
-                   :invalid="obterValidacaoCampo('endereco.cidade').invalido"
-                   @blur="marcarCampoTocado('endereco.cidade')"/>
-        <small v-if="obterValidacaoCampo('endereco.cidade').invalido" class="erro-label">
-          {{ obterValidacaoCampo('endereco.cidade').mensagem }}
-        </small>
-      </div>
-      <div class="campo">
-        <label for="uf">UF</label>
-        <Select
-            inputId="uf"
-            v-model="formulario.endereco.uf"
-            :options="ufsComSelecione"
-            optionLabel="label"
-            optionValue="value"
-            filter
-            emptyFilterMessage="Nenhum resultado encontrado"
-            placeholder="Selecione"
-            :disabled="!editando"
-            :invalid="obterValidacaoCampo('endereco.uf').invalido"
-            @blur="marcarCampoTocado('endereco.uf')"
-        />
-        <small v-if="obterValidacaoCampo('endereco.uf').invalido" class="erro-label">
-          {{ obterValidacaoCampo('endereco.uf').mensagem }}
-        </small>
-      </div>
-      <div class="campo">
-        <label for="numero">Número</label>
-        <InputText id="numero" v-model="formulario.endereco.numero"
-                   @input="tratarNumeroEnderecoInput"
-                   @keydown="bloquearTeclaCampo('somenteNumeros', $event)"
-                   @paste="bloquearColagemCampo('somenteNumeros', $event)"
-                   :disabled="!editando"
-                   @blur="marcarCampoTocado('endereco.numero')"/>
-      </div>
-      <div class="campo">
-        <label for="complemento">Complemento</label>
-        <InputText id="complemento" v-model="formulario.endereco.complemento"
-                   :disabled="!editando"
-                   @blur="marcarCampoTocado('endereco.complemento')"/>
-      </div>
-    </div>
 
-    <div v-if="abaAtiva === 2" class="grid-campos">
-      <div class="campo">
-        <label for="numConta">Número da conta</label>
-        <InputMask id="numConta" v-model="formulario.conta.numConta" mask="99999999-9"
-                   :disabled="!editando"
-                   :invalid="obterValidacaoCampo('conta.numConta').invalido"
-                   @blur="marcarCampoTocado('conta.numConta')"/>
-        <small v-if="obterValidacaoCampo('conta.numConta').invalido" class="erro-label">
-          {{ obterValidacaoCampo('conta.numConta').mensagem }}
-        </small>
+      <div v-if="abaAtiva === 2" class="grid-campos">
+        <div class="campo">
+          <label for="numConta">Número da conta</label>
+          <InputMask id="numConta" name="conta.numConta" v-model="formulario.conta.numConta" mask="99999999-9"
+                     :disabled="!editando"
+                     :invalid="campoInvalido($form, 'conta.numConta')"/>
+          <Message v-if="campoInvalido($form, 'conta.numConta')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'conta.numConta') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="agencia">Agência</label>
+          <InputMask id="agencia" name="conta.agencia" v-model="formulario.conta.agencia" mask="9999"
+                     :disabled="!editando"
+                     :invalid="campoInvalido($form, 'conta.agencia')"/>
+          <Message v-if="campoInvalido($form, 'conta.agencia')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'conta.agencia') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="tipoConta">Tipo da conta</label>
+          <Select
+              id="tipoConta"
+              name="conta.tipoConta"
+              v-model="formulario.conta.tipoConta"
+              :options="tiposContaComSelecione"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Selecione"
+              :disabled="!editando"
+              :invalid="campoInvalido($form, 'conta.tipoConta')"
+          />
+          <Message v-if="campoInvalido($form, 'conta.tipoConta')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'conta.tipoConta') }}
+          </Message>
+        </div>
+        <div class="campo">
+          <label for="salario">Salário</label>
+          <InputNumber
+              id="salario" name="conta.salario"
+              v-model="formulario.conta.salario"
+              mode="decimal"
+              :minFractionDigits="2"
+              :maxFractionDigits="2"
+              :min="0.01"
+              locale="pt-BR"
+              :disabled="!editando"
+              :invalid="campoInvalido($form, 'conta.salario')"
+          />
+          <Message v-if="campoInvalido($form, 'conta.salario')" severity="error" size="small" variant="simple">
+            {{ obterMensagemCampo($form, 'conta.salario') }}
+          </Message>
+        </div>
       </div>
-      <div class="campo">
-        <label for="agencia">Agência</label>
-        <InputMask id="agencia" v-model="formulario.conta.agencia" mask="9999"
-                   :disabled="!editando"
-                   :invalid="obterValidacaoCampo('conta.agencia').invalido"
-                   @blur="marcarCampoTocado('conta.agencia')"/>
-        <small v-if="obterValidacaoCampo('conta.agencia').invalido" class="erro-label">
-          {{ obterValidacaoCampo('conta.agencia').mensagem }}
-        </small>
-      </div>
-      <div class="campo">
-        <label for="tipoConta">Tipo da conta</label>
-        <Select
-            id="tipoConta"
-            v-model="formulario.conta.tipoConta"
-            :options="tiposContaComSelecione"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Selecione"
-            :invalid="obterValidacaoCampo('conta.tipoConta').invalido"
-            @blur="marcarCampoTocado('conta.tipoConta')"
-        />
-        <small v-if="obterValidacaoCampo('conta.tipoConta').invalido" class="erro-label">
-          {{ obterValidacaoCampo('conta.tipoConta').mensagem }}
-        </small>
-      </div>
-      <div class="campo">
-        <label for="salario">Salário</label>
-        <InputNumber
-            id="salario"
-            v-model="formulario.conta.salario"
-            mode="decimal"
-            :minFractionDigits="2"
-            :maxFractionDigits="2"
-            :min="0.01"
-            locale="pt-BR"
-            :disabled="!editando"
-            :invalid="obterValidacaoCampo('conta.salario').invalido"
-            @blur="marcarCampoTocado('conta.salario')"
-        />
-        <small v-if="obterValidacaoCampo('conta.salario').invalido" class="erro-label">
-          {{ obterValidacaoCampo('conta.salario').mensagem }}
-        </small>
-      </div>
-    </div>
 
-    <div class="acoes-form">
-      <Button
-          label="Editar"
-          :loading="loading"
-          :disabled="!todosCamposValidos"
-          @click="salvarAlteracoes"
-      />
-      <Button
-          label="Excluir"
-          severity="danger"
-          outlined
-          :disabled="!funcionarioLocal || loading"
-          @click="excluirFuncionario"
-      />
-      <Button
-          label="Cancelar"
-          severity="secondary"
-          outlined
-          @click="cancelarConsulta"
-      />
-    </div>
+      <div class="acoes-form">
+        <Button
+            label="Editar"
+            type="submit"
+            :loading="loading"
+        />
+        <Button
+            label="Excluir"
+            severity="danger"
+            outlined
+            :disabled="!funcionarioLocal || loading"
+            @click="excluirFuncionario"
+        />
+        <Button
+            label="Cancelar"
+            severity="secondary"
+            outlined
+            @click="cancelarConsulta"
+        />
+      </div>
+    </Form>
   </div>
 </template>
 
@@ -245,6 +242,8 @@ import InputMask from 'primevue/inputmask';
 import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import TabMenu from 'primevue/tabmenu';
+import Message from 'primevue/message';
+import {Form} from '@primevue/forms';
 import {extrairMensagemPorCampo} from '@/utils/msgErros.js';
 import ModalPesquisaFuncionario from '@/components/cadastro/ModalPesquisaFuncionario.vue';
 
@@ -318,48 +317,21 @@ const especialidadesComSelecione = computed(() => [
   ...(props.especialidadesOptions || [])
 ]);
 
-const obterDescricaoEspecialidade = (valor) => {
-  if (!valor) {
-    return '';
-  }
-
-  const valorNormalizado = String(valor).trim().toLowerCase();
-  const encontrado = (props.especialidadesOptions || []).find((item) => {
-    const codigo = String(item?.value ?? '').trim().toLowerCase();
-    const descricao = String(item?.label ?? '').trim().toLowerCase();
-    return valorNormalizado === codigo || valorNormalizado === descricao;
-  });
-
-  return encontrado?.label || String(valor).trim();
-};
-
 const obterCodigoEspecialidade = (valor) => {
-  if (!valor) {
-    return '';
-  }
-
+  if (!valor) return '';
   const valorNormalizado = String(valor).trim().toLowerCase();
   const encontrado = (props.especialidadesOptions || []).find((item) => {
     const codigo = String(item?.value ?? '').trim().toLowerCase();
     const descricao = String(item?.label ?? '').trim().toLowerCase();
     return valorNormalizado === codigo || valorNormalizado === descricao;
   });
-
   return encontrado?.value || String(valor).trim();
-};
-
-const obterDescricaoTipoConta = (valor) => {
-  const encontrado = tiposConta.find((item) => item.value === valor);
-  return encontrado?.label || String(valor || '');
 };
 
 const obterCodigoTipoConta = (valor) => {
   const encontrado = tiposConta.find((item) => item.value === valor || item.label === valor);
   return encontrado?.value || String(valor || '');
 };
-
-const especialidadeExibicao = computed(() => obterDescricaoEspecialidade(formulario.value.especialidade));
-const tipoContaExibicao = computed(() => obterDescricaoTipoConta(formulario.value.conta.tipoConta));
 
 const formularioInicial = () => ({
   cpf: '',
@@ -388,81 +360,90 @@ const formulario = ref(formularioInicial());
 const funcionarioLocal = ref(null);
 const editando = ref(true);
 const abaAtiva = ref(0);
-const camposTocados = ref({});
 const modalPesquisaVisivel = computed({
   get: () => props.mostrarModalPesquisa,
   set: (valor) => emit('update:mostrarModalPesquisa', valor)
 });
 
-const camposObrigatorios = [
-  'cpf', 'nome', 'idade', 'email', 'especialidade',
-  'endereco.cep', 'endereco.logradouro', 'endereco.bairro',
-  'endereco.cidade', 'endereco.uf',
-  'conta.numConta', 'conta.agencia', 'conta.tipoConta', 'conta.salario'
-];
+// --- Lógica de Validação PrimeVue Forms ---
 
-const estadoCamposTocadosInicial = () => camposObrigatorios.reduce((acc, campo) => {
-  acc[campo] = false;
-  return acc;
-}, {});
+const resolver = ({values}) => {
+  const errors = {};
+  const addError = (field, message) => {
+    errors[field] = [{message}];
+  };
+
+  if (!values.cpf) addError('cpf', 'CPF é obrigatório');
+  if (!values.nome?.trim()) addError('nome', 'Nome é obrigatório');
+
+  if (values.idade === null || values.idade === undefined || values.idade === '') {
+    addError('idade', 'Idade é obrigatória');
+  } else if (values.idade < 18) {
+    addError('idade', 'O funcionário deve ser maior de 18 anos');
+  } else if (values.idade > 120) {
+    addError('idade', 'Idade inválida');
+  }
+
+  if (!values.email?.trim()) {
+    addError('email', 'Email é obrigatório');
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+    addError('email', 'Email inválido');
+  }
+
+  if (!values.especialidade) addError('especialidade', 'Especialidade é obrigatória');
+
+  if (!values.endereco?.cep) addError('endereco.cep', 'CEP é obrigatório');
+  if (!values.endereco?.logradouro?.trim()) addError('endereco.logradouro', 'Logradouro é obrigatório');
+  if (!values.endereco?.bairro?.trim()) addError('endereco.bairro', 'Bairro é obrigatório');
+  if (!values.endereco?.cidade?.trim()) addError('endereco.cidade', 'Cidade é obrigatória');
+  if (!values.endereco?.uf) addError('endereco.uf', 'UF é obrigatória');
+
+  if (!values.conta?.numConta) addError('conta.numConta', 'Número da conta é obrigatório');
+  if (!values.conta?.agencia) addError('conta.agencia', 'Agência é obrigatória');
+  if (!values.conta?.tipoConta) addError('conta.tipoConta', 'Tipo da conta é obrigatório');
+  if (values.conta?.salario === null || values.conta?.salario === undefined || values.conta?.salario === '') {
+    addError('conta.salario', 'Salário é obrigatório');
+  }
+
+  return {errors};
+};
+
+const obterEstadoCampoForm = ($form, campo) => {
+  if (!$form) return null;
+  return campo.split('.').reduce((acumulado, chave) => acumulado?.[chave], $form);
+};
+
+const campoInvalido = ($form, campo) => {
+  const estado = obterEstadoCampoForm($form, campo);
+  return props.camposComErro.includes(campo) || Boolean(estado?.invalid);
+};
+
+const obterMensagemCampo = ($form, campo) => {
+  if (props.camposComErro.includes(campo)) {
+    return extrairMensagemPorCampo(campo);
+  }
+  const estado = obterEstadoCampoForm($form, campo);
+  return estado?.error?.message || '';
+};
+
+// --- Utilitários e Eventos ---
 
 const normalizarCpf = (valor) => String(valor || '').replace(/\D/g, '');
 
 const bloquearTeclaCampo = (tipo, event) => {
   const tecla = event?.key || '';
-  const teclasLiberadas = [
-    'Backspace',
-    'Tab',
-    'Enter',
-    'ArrowLeft',
-    'ArrowRight',
-    'ArrowUp',
-    'ArrowDown',
-    'Delete',
-    'Home',
-    'End',
-    'Escape'
-  ];
-
-  if (teclasLiberadas.includes(tecla) || event?.ctrlKey || event?.metaKey || event?.altKey) {
-    return;
-  }
-
-  if (tecla.length !== 1) {
-    return;
-  }
-
-  if (tipo === 'semNumeros' && /\d/.test(tecla)) {
-    event.preventDefault();
-  }
-
-  if (tipo === 'somenteNumeros' && /\D/.test(tecla)) {
-    event.preventDefault();
-  }
-
-  if (tipo === 'somenteLetras' && /\d/.test(tecla)) {
-    event.preventDefault();
-  }
+  const teclasLiberadas = ['Backspace', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Delete', 'Home', 'End', 'Escape'];
+  if (teclasLiberadas.includes(tecla) || event?.ctrlKey || event?.metaKey || event?.altKey) return;
+  if (tecla.length !== 1) return;
+  if (tipo === 'semNumeros' && /\d/.test(tecla)) event.preventDefault();
+  if (tipo === 'somenteNumeros' && /\D/.test(tecla)) event.preventDefault();
 };
 
 const bloquearColagemCampo = (tipo, event) => {
   const texto = event?.clipboardData?.getData('text') || '';
-
-  if (!texto) {
-    return;
-  }
-
-  if (tipo === 'semNumeros' && /\d/.test(texto)) {
-    event.preventDefault();
-  }
-
-  if (tipo === 'somenteNumeros' && /\D/.test(texto)) {
-    event.preventDefault();
-  }
-
-  if (tipo === 'somenteLetras' && /\d/.test(texto)) {
-    event.preventDefault();
-  }
+  if (!texto) return;
+  if (tipo === 'semNumeros' && /\d/.test(texto)) event.preventDefault();
+  if (tipo === 'somenteNumeros' && /\D/.test(texto)) event.preventDefault();
 };
 
 const tratarNomeInput = (event) => {
@@ -473,88 +454,6 @@ const tratarNumeroEnderecoInput = (event) => {
   formulario.value.endereco.numero = String(event?.target?.value || '').replace(/\D/g, '');
 };
 
-const estaCampoVazio = (campo) => {
-  if (campo === 'endereco.cep') return !formulario.value.endereco.cep?.trim();
-  if (campo === 'endereco.logradouro') return !formulario.value.endereco.logradouro?.trim();
-  if (campo === 'endereco.bairro') return !formulario.value.endereco.bairro?.trim();
-  if (campo === 'endereco.cidade') return !formulario.value.endereco.cidade?.trim();
-  if (campo === 'endereco.uf') return !formulario.value.endereco.uf?.trim();
-  if (campo === 'conta.numConta') return !formulario.value.conta.numConta?.trim();
-  if (campo === 'conta.agencia') return !formulario.value.conta.agencia?.trim();
-  if (campo === 'conta.tipoConta') return !formulario.value.conta.tipoConta?.trim();
-  if (campo === 'conta.salario') return !formulario.value.conta.salario;
-
-  const valor = formulario.value[campo];
-  if (typeof valor === 'string') return !valor?.trim();
-  return !valor;
-};
-
-const validarCampo = (campo) => {
-  if (campo === 'idade') {
-    if (estaCampoVazio('idade')) return {invalido: true, mensagem: 'Idade é obrigatória'};
-    if (formulario.value.idade < 18) return {invalido: true, mensagem: 'O funcionário deve ser maior de 18 anos'};
-    if (formulario.value.idade > 120) return {invalido: true, mensagem: 'Idade inválida'};
-    return {invalido: false, mensagem: ''};
-  }
-
-  if (campo === 'cpf') {
-    if (estaCampoVazio('cpf')) return {invalido: true, mensagem: 'CPF é obrigatório'};
-    return {invalido: false, mensagem: ''};
-  }
-
-  if (campo === 'email') {
-    if (estaCampoVazio('email')) return {invalido: true, mensagem: 'Email é obrigatório'};
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(formulario.value.email || '').trim())) {
-      return {invalido: true, mensagem: 'Email inválido'};
-    }
-    return {invalido: false, mensagem: ''};
-  }
-
-  if (campo === 'endereco.uf') {
-    if (estaCampoVazio('endereco.uf')) return {invalido: true, mensagem: 'UF é obrigatória'};
-    if (!ufsBrasil.includes(String(formulario.value.endereco.uf || '').trim().toUpperCase())) {
-      return {invalido: true, mensagem: 'UF inválida'};
-    }
-    return {invalido: false, mensagem: ''};
-  }
-
-  if (campo === 'especialidade') {
-    if (estaCampoVazio('especialidade')) return {invalido: true, mensagem: 'Especialidade é obrigatória'};
-    return {invalido: false, mensagem: ''};
-  }
-
-  if (estaCampoVazio(campo)) {
-    return {invalido: true, mensagem: extrairMensagemPorCampo(campo)};
-  }
-
-  return {invalido: false, mensagem: ''};
-};
-
-const todosCamposValidos = computed(() => camposObrigatorios.every((campo) => !validarCampo(campo).invalido));
-
-const marcarCampoTocado = (campo) => {
-  camposTocados.value[campo] = true;
-};
-
-const obterValidacaoCampo = (campo) => {
-  if (props.camposComErro.includes(campo)) {
-    return {
-      invalido: true,
-      mensagem: extrairMensagemPorCampo(campo)
-    };
-  }
-
-  if (!editando.value) {
-    return {invalido: false, mensagem: ''};
-  }
-
-  if (camposObrigatorios.includes(campo) && camposTocados.value[campo]) {
-    return validarCampo(campo);
-  }
-
-  return {invalido: false, mensagem: ''};
-};
-
 const clonarFuncionario = (funcionario) => ({
   cpf: funcionario?.cpf || '',
   nome: funcionario?.nome || '',
@@ -563,12 +462,7 @@ const clonarFuncionario = (funcionario) => ({
   especialidade: obterCodigoEspecialidade(
       typeof funcionario?.especialidade === 'string'
           ? funcionario.especialidade
-          : funcionario?.especialidade?.descricao
-          || funcionario?.especialidade?.label
-          || funcionario?.especialidade?.nome
-          || funcionario?.especialidade?.codigo
-          || funcionario?.especialidade?.value
-          || funcionario?.especialidade?.id
+          : funcionario?.especialidade?.descricao || funcionario?.especialidade?.label || funcionario?.especialidade?.nome || funcionario?.especialidade?.codigo || funcionario?.especialidade?.value || funcionario?.especialidade?.id
   ),
   conta: {
     numConta: funcionario?.conta?.numConta || '',
@@ -587,30 +481,28 @@ const clonarFuncionario = (funcionario) => ({
   }
 });
 
-const normalizarPayload = () => ({
-  ...formulario.value,
-  cpf: normalizarCpf(formulario.value.cpf),
-  idade: formulario.value.idade === '' || formulario.value.idade === null ? null : Number(formulario.value.idade),
-  especialidade: obterCodigoEspecialidade(formulario.value.especialidade),
-  conta: {
-    ...formulario.value.conta,
-    salario: formulario.value.conta.salario === '' || formulario.value.conta.salario === null
-        ? null
-        : Number(formulario.value.conta.salario)
-  },
-  endereco: {
-    ...formulario.value.endereco,
-    uf: String(formulario.value.endereco.uf || '').trim().toUpperCase()
-  }
-});
-
-const ativarEdicao = () => {
-  editando.value = true;
-  camposTocados.value = estadoCamposTocadosInicial();
+const normalizarPayload = () => {
+  const values = formulario.value;
+  return {
+    ...values,
+    cpf: normalizarCpf(values.cpf),
+    idade: values.idade === '' || values.idade === null ? null : Number(values.idade),
+    especialidade: obterCodigoEspecialidade(values.especialidade),
+    conta: {
+      ...values.conta,
+      salario: values.conta.salario === '' || values.conta.salario === null ? null : Number(values.conta.salario)
+    },
+    endereco: {
+      ...values.endereco,
+      uf: String(values.endereco.uf || '').trim().toUpperCase()
+    }
+  };
 };
 
-const salvarAlteracoes = () => {
-  emit('salvar', normalizarPayload());
+const onFormSubmit = ({valid}) => {
+  if (valid) {
+    emit('salvar', normalizarPayload());
+  }
 };
 
 const excluirFuncionario = () => {
@@ -627,7 +519,6 @@ watch(
       funcionarioLocal.value = novoFuncionario;
       formulario.value = novoFuncionario ? clonarFuncionario(novoFuncionario) : formularioInicial();
       editando.value = true;
-      camposTocados.value = estadoCamposTocadosInicial();
       abaAtiva.value = 0;
     },
     {immediate: true, deep: true}

@@ -175,9 +175,7 @@ const executarCadastro = async (payload) => {
     await ApiService.cadastrarFuncionario(payload);
     toast.mostrar('Funcionário cadastrado com sucesso!', 'sucesso');
     blocoCadastroRef.value?.resetForm();
-    setTimeout(() => {
-      modoTela.value = '';
-    }, 1000);
+    modoTela.value = '';
   } catch (errorApi) {
     const erroExtraido = extrairErros(errorApi);
     camposComErro.value = erroExtraido.campos;
