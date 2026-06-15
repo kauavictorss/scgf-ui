@@ -85,33 +85,39 @@ const visibilidade = computed({
 const mensagemExibida = computed(() => props.mensagem?.trim() || '');
 
 const obterDescricaoEspecialidade = (especialidade) => {
-  if (!especialidade) {
-    return '';
-  }
-
-  if (typeof especialidade === 'string') {
-    return especialidade;
-  }
-
+  if (!especialidade) return '';
+  if (typeof especialidade === 'string') return especialidade;
   return especialidade.descricao || especialidade.label || especialidade.nome || '';
 };
+
+// Pré-processa os funcionários para busca rápida
+const funcionariosParaBusca = computed(() => {
+  return props.funcionarios.map(f => ({
+    original: f,
+    nomeBusca: normalizarTexto(f.nome),
+    cpfBusca: normalizarTexto(f.cpf),
+    especialidadeBusca: normalizarTexto(obterDescricaoEspecialidade(f.especialidade))
+  }));
+});
 
 const funcionariosFiltrados = computed(() => {
   const nome = normalizarTexto(filtroNome.value);
   const cpf = normalizarTexto(filtroCpf.value);
   const especialidade = normalizarTexto(filtroEspecialidade.value);
 
-  return props.funcionarios.filter((funcionario) => {
-    const nomeFuncionario = normalizarTexto(funcionario.nome);
-    const cpfFuncionario = normalizarTexto(funcionario.cpf);
-    const especialidadeFuncionario = normalizarTexto(obterDescricaoEspecialidade(funcionario.especialidade));
+  if (!nome && !cpf && !especialidade) {
+    return props.funcionarios;
+  }
 
-    return (
-        (!nome || nomeFuncionario.includes(nome)) &&
-        (!cpf || cpfFuncionario.includes(cpf)) &&
-        (!especialidade || especialidadeFuncionario.includes(especialidade))
-    );
-  });
+  return funcionariosParaBusca.value
+      .filter((item) => {
+        return (
+            (!nome || item.nomeBusca.includes(nome)) &&
+            (!cpf || item.cpfBusca.includes(cpf)) &&
+            (!especialidade || item.especialidadeBusca.includes(especialidade))
+        );
+      })
+      .map(item => item.original);
 });
 
 const fecharModal = () => {

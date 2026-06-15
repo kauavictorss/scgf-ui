@@ -383,21 +383,26 @@ const carregarEspecialidades = async () => {
   } catch (error) {
     console.error('Erro ao carregar especialidades:', error);
     especialidades.value = [];
+    // Não exibe toast aqui para não sobrecarregar o usuário se já houver erro de lista
   }
 };
 
 const abrirCadastro = async () => {
   cancelarConsulta();
-  await carregarEspecialidades();
   modoTela.value = 'cadastro';
+  await carregarEspecialidades();
 };
 
 const abrirConsulta = async () => {
   modoTela.value = '';
   mensagemConsultaErro.value = '';
-  await carregarFuncionariosConsulta();
-  await carregarEspecialidades();
   mostrarModalConsulta.value = true;
+  
+  // Carrega em paralelo para ganhar tempo
+  Promise.all([
+    carregarFuncionariosConsulta(),
+    carregarEspecialidades()
+  ]);
 };
 </script>
 
