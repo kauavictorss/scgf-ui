@@ -1,7 +1,7 @@
 <template>
   <div class="login-view">
     <div class="login-background">
-      <img src="/logo.png" alt="SCGF Logo" class="bg-logo"/>
+      <img src="../assets/brasao.png" alt="Brasão SCGF" class="bg-brasao"/>
     </div>
     <ModalLogin/>
   </div>
@@ -31,7 +31,7 @@ import ModalLogin from '@/components/layout/ModalLogin.vue';
   pointer-events: none;
 }
 
-.bg-logo {
+.bg-brasao {
   width: min(400px, 80vw);
   height: auto;
 }
