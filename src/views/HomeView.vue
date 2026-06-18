@@ -2,15 +2,15 @@
   <div class="home-view">
     <h1>Seja Bem-vindo ao SCGF</h1>
     <img
-        class="home-view__logo"
-        src="/logo.png"
-        alt="Logo do SCGF"
+        class="home-view__brasao"
+        src="../assets/brasao.png"
+        alt="Brasão SCGF"
         loading="eager"
         decoding="async"
     />
     <div class="home-view__texto">
       <p class="home-view__subtitulo">Sistema de Consultas e Gerenciamento de Funcionários</p>
-      <p class="home-view__versao">Versão 1.1.0</p>
+      <p class="home-view__versao">Versão 1.2.5</p>
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@
   padding-top: 1.75rem;
 }
 
-.home-view__logo {
+.home-view__brasao {
   width: min(275px, 70vw);
   height: auto;
   object-fit: contain;

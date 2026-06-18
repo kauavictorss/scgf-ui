@@ -1,12 +1,6 @@
 <template>
   <div class="cabecalho-menu">
     <Menubar :model="items">
-      <template #start>
-        <div class="marca-sistema" aria-label="SCGF">
-          <img src="/logo.png" alt="Logo do SCGF" class="marca-logo"/>
-          <span class="marca-texto">SCGF</span>
-        </div>
-      </template>
       <template #end>
         <div class="acoes-menu">
           <ThemeToggle/>
@@ -113,29 +107,6 @@ const items = ref([
 .cabecalho-menu {
   display: flex;
   flex-direction: column;
-}
-
-.marca-sistema {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding-right: 0.75rem;
-  margin-right: 1rem;
-  border-right: 1px solid var(--app-border);
-  user-select: none;
-}
-
-.marca-logo {
-  width: 2rem;
-  height: 2rem;
-  object-fit: contain;
-  flex: 0 0 auto;
-}
-
-.marca-texto {
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--app-text);
 }
 
 :deep(.p-menubar) {
