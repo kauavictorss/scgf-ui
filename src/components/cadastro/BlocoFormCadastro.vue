@@ -104,7 +104,7 @@
         </Message>
       </div>
       <div class="campo">
-        <label for="uf">Estado (UF)</label>
+        <label for="uf">Estado - UF</label>
         <Select
             inputId="uf"
             name="endereco.uf"
@@ -232,7 +232,7 @@ const ufsBrasil = [
 
 const ufsComSelecione = [
   {label: 'Selecione', value: ''},
-  ...ufsBrasil.map((item) => ({label: `${item.nome} (${item.uf})`, value: item.uf}))
+  ...ufsBrasil.map((item) => ({label: `${item.nome} - ${item.uf}`, value: item.uf}))
 ];
 
 const props = defineProps({
