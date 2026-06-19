@@ -92,6 +92,46 @@ const descricaoEspecialidade = (especialidade) => {
   );
 };
 
+const nomesEstadosPorUf = {
+  AC: 'Acre',
+  AL: 'Alagoas',
+  AP: 'Amapá',
+  AM: 'Amazonas',
+  BA: 'Bahia',
+  CE: 'Ceará',
+  DF: 'Distrito Federal',
+  ES: 'Espírito Santo',
+  GO: 'Goiás',
+  MA: 'Maranhão',
+  MT: 'Mato Grosso',
+  MS: 'Mato Grosso do Sul',
+  MG: 'Minas Gerais',
+  PA: 'Pará',
+  PB: 'Paraíba',
+  PR: 'Paraná',
+  PE: 'Pernambuco',
+  PI: 'Piauí',
+  RJ: 'Rio de Janeiro',
+  RN: 'Rio Grande do Norte',
+  RS: 'Rio Grande do Sul',
+  RO: 'Rondônia',
+  RR: 'Roraima',
+  SC: 'Santa Catarina',
+  SP: 'São Paulo',
+  SE: 'Sergipe',
+  TO: 'Tocantins'
+};
+
+const estadoUfFormatado = (uf) => {
+  const ufNormalizada = String(uf || '').trim().toUpperCase();
+  if (!ufNormalizada) {
+    return 'Não informado';
+  }
+
+  const estado = nomesEstadosPorUf[ufNormalizada];
+  return estado ? `${estado} - ${ufNormalizada}` : ufNormalizada;
+};
+
 const linhasDetalhes = computed(() => {
   const funcionario = props.funcionario;
   if (!funcionario) {
@@ -113,7 +153,7 @@ const linhasDetalhes = computed(() => {
     {chave: 'numero', label: 'Número', valor: valorOuPadrao(funcionario.endereco?.numero)},
     {chave: 'bairro', label: 'Bairro', valor: valorOuPadrao(funcionario.endereco?.bairro)},
     {chave: 'cidade', label: 'Cidade', valor: valorOuPadrao(funcionario.endereco?.cidade)},
-    {chave: 'uf', label: 'UF', valor: valorOuPadrao(funcionario.endereco?.uf)},
+    {chave: 'uf', label: 'Estado - UF', valor: estadoUfFormatado(funcionario.endereco?.uf)},
     {chave: 'complemento', label: 'Complemento', valor: valorOuPadrao(funcionario.endereco?.complemento)}
   ];
 });
